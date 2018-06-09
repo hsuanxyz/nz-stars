@@ -13,7 +13,7 @@ TODO 最终应用截图
 - HTML、CSS 和 JavaScript 的中级知识。
 - TypeScript 与 Angular 入门。
 
-## 零 - 初始化项目
+## 0 - 初始化项目
 
 首先我们需要安装 [Angular CLI](https://cli.angular.io/) 它使我们不再需要配置繁琐的开发环境。构建、调试、代理、打包部署等一些列操作...
 
@@ -43,3 +43,31 @@ ng serve -o # open your browser on http://localhost:4200/
 当你在浏览器中看见下面的页面就说明我们可以继续下一步了
 
 TODO 引导页截图
+
+## 1 - 布局
+
+
+这里我们会用 `ng generate` 命令，来快速生成组件。NG-ZORRO 现在有 **300+** 预设模板，你可以在[官网](https://ng.ant.design)中的任何一个组件DEMO中找到对于的命令拷贝按钮。
+
+在命令行中输入下面的命令。
+
+```base
+ng g ng-zorro-antd:layout-fixed-sider -p app --styleext='less' --name=layout
+```
+
+**发生了什么**？我们使用 NG-ZORRO 提供的 `layout-fixed-sider` 模板生成一个叫做 `layout` 的侧边栏固定布局组件。并且为你声明在了 `app.module.ts` 中。
+
+
+
+然后我们修改我们的 `app.component.html` 代码，替换成我们生成的 `layout` 组件。
+
+***app.component.html***
+
+```html
+<app-layout></app-layout>
+```
+
+现在你的应用应该像下面这样。
+
+![1-layout](screenshots/1-layout.png)
+
