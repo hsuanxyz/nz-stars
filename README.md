@@ -191,21 +191,35 @@ ng g c user-panel # 生成 src/app/user-panel
 ...
 ```
 
-**layout.component.less**
-
-```less
-.side {
-   ...
-  .user-pane-wrap {
-    height: 64px;
-    padding: 16px;
-  }
-}
-```
-
  **user-panel.component.html**
  
  ```html
+<nz-avatar nzIcon="anticon anticon-user"></nz-avatar>
+<div class="username">用户名</div>
+<div class="add-user">
+  <a *ngIf="false">添加用户</a>
+  <a>切换</a>
+</div>
+ ```
  
+
+ **user-panel.component.less**
  
+ ```less
+ :host {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  .username {
+    margin: 0 10px;
+    color: #595959;
+    font-weight: 500;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
  ```
