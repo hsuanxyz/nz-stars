@@ -1,0 +1,5 @@
+<nz-input-group [nzSuffix]="suffixTemplate" nzPrefixIcon="anticon anticon-search">
+  <input class="search-input" type="text" nz-input placeholder="搜索仓库" [nzSize]="'large'" [ngModel]="term" (ngModelChange)="onSearch($event)">
+</nz-input-group>
+<ng-template #suffixTemplate><i class="anticon anticon-close-circle" (click)="onClear()" *ngIf="term"></i>
+</ng-template>

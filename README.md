@@ -143,6 +143,7 @@ ng g ng-zorro-antd:layout-top-side-2 -p app --styleext='less' --name=layout
 
   .search-bar-wrap {
     flex: 1 1 auto;
+    padding-right: 36px
   }
 
   .user-pane-wrap {
@@ -193,19 +194,19 @@ ng g c user-panel # 生成 src/app/user-panel
 
  **user-panel.component.html**
  
- ```html
+```html
 <nz-avatar nzIcon="anticon anticon-user"></nz-avatar>
 <div class="username">用户名</div>
 <div class="add-user">
   <a *ngIf="false">添加用户</a>
   <a>切换</a>
 </div>
- ```
+```
  
 
  **user-panel.component.less**
  
- ```less
+```less
  :host {
   display: flex;
   justify-content: flex-start;
@@ -221,5 +222,94 @@ ng g c user-panel # 生成 src/app/user-panel
     white-space: nowrap;
   }
 }
+```
+ 
+### 2-2 搜索框
 
- ```
+命令行输入以下命令：
+
+```base
+ng g ng-zorro-antd:input-presuffix -p app --styleext='less' --name=search-bar # 生成 src/app/search-bar
+```
+
+修改下列文件内容
+
+**layout.component.html**
+
+```html
+...
+<div class="search-bar-wrap">
+  <app-search-bar></app-search-bar>
+</div>
+...
+```
+
+**search-bar.component.html**
+
+```html
+<nz-input-group [nzSuffix]="suffixTemplate" nzPrefixIcon="anticon anticon-search">
+  <input class="search-input" type="text" nz-input placeholder="搜索仓库" [nzSize]="'large'" [ngModel]="term" (ngModelChange)="onSearch($event)">
+</nz-input-group>
+<ng-template #suffixTemplate><i class="anticon anticon-close-circle" (click)="onClear()" *ngIf="term"></i>
+</ng-template>
+```
+
+**search-bar.component.ts**
+
+我们使用 `@Output` 声明两个输出事件，用于与父组件通讯。
+
+```ts
+import { Component, EventEmitter, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-search-bar',
+  templateUrl: './search-bar.component.html',
+  styleUrls: ['./search-bar.component.less']
+})
+export class SearchBarComponent {
+  term: string;
+
+  @Output() search = new EventEmitter<string>();
+  @Output() clear = new EventEmitter<void>();
+
+  onClear(): void{
+    this.term = null;
+    this.clear.emit()
+  }
+
+  onSearch(value: string): void {
+    this.term = value;
+    this.search.emit(value);
+  }
+}
+```
+
+**search-bar.component.less**
+
+```less
+.search-input {
+  border: none;
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+.anticon-close-circle {
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.3s;
+  font-size: 12px;
+}
+
+.anticon-close-circle:hover {
+  color: #999;
+}
+
+.anticon-close-circle:active {
+  color: #666;
+}
+```
+
+现在我们的头部应该像下面这样
+
+![header](./screenshots/2-2-header.png)

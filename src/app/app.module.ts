@@ -11,6 +11,7 @@ import { registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
 import { LayoutComponent } from './layout/layout.component';
 import { UserPanelComponent } from './user-panel/user-panel.component';
+import { SearchBarComponent } from './search-bar/search-bar.component';
 
 registerLocaleData(zh);
 
@@ -18,7 +19,8 @@ registerLocaleData(zh);
   declarations: [
     AppComponent,
     LayoutComponent,
-    UserPanelComponent
+    UserPanelComponent,
+    SearchBarComponent
   ],
   imports: [
     BrowserModule,
