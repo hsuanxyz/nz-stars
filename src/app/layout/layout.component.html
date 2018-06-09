@@ -1,25 +1,25 @@
 <nz-layout class="layout">
-  <nz-sider [nzWidth]="350" class="side">
+  <nz-header class="header">
+    <div class="title">Stars Manager</div>
+    <div class="search-bar-wrap">
+      <!--TODO 搜索框-->
+    </div>
     <div class="user-pane-wrap">
       <!--TODO 用户面板-->
     </div>
-    <div class="tags-wrap">
-      <!--TODO 标签管理-->
-    </div>
-  </nz-sider>
-  <nz-layout class="content">
-    <nz-header class="header">
-      <div class="search-bar-wrap">
-        <!--TODO 搜索框-->
+  </nz-header>
+  <nz-layout class="main">
+    <nz-sider [nzWidth]="350" class="side">
+      <div class="tags-wrap">
+        <!--TODO 标签管理-->
       </div>
-    </nz-header>
-    <nz-content class="main">
-      <div class="item-list-wrap">
-        <!--TODO 项目列表-->
-      </div>
-    </nz-content>
-    <nz-footer class="footer">
-      Github Stars Manager Implement By <a href="https://ng.ant.design/">NG-ZORRO</a>
-    </nz-footer>
+    </nz-sider>
+    <nz-layout>
+      <nz-content class="content">
+        <div class="item-list-wrap">
+          <!--TODO 项目列表-->
+        </div>
+      </nz-content>
+    </nz-layout>
   </nz-layout>
 </nz-layout>
