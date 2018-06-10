@@ -497,17 +497,20 @@ ng g s services/github
 
 Angualr CLI 会在 `services` 下创建一个 `github.service.ts` 文件夹。值得注意的是在 Angualr6 中，你不需要在模块中的 `providers` 字段中声明服务。相反，现在是在服务中的 `Injectable` 声明模块。默认会声明 `root` 模块，也就是说你在应用的任何地方都可以使用它。
 
+为了处理 `http` 请求，我们需要将 `HttpClient` 类注入到 `GithubService` 中，就像下面这样：
+
 **github.service.ts**
 
 ```ts
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GithubService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 }
 ```
 
