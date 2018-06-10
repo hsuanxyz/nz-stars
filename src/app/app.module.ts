@@ -9,11 +9,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgZorroAntdModule, NZ_I18N, zh_CN } from 'ng-zorro-antd';
 import { registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
-import { LayoutComponent } from './layout/layout.component';
-import { UserPanelComponent } from './user-panel/user-panel.component';
-import { SearchBarComponent } from './search-bar/search-bar.component';
-import { LabelsFilterComponent } from './labels-filter/labels-filter.component';
-import { ItemListComponent } from './item-list/item-list.component';
+import { LayoutComponent } from './components/layout/layout.component';
+import { UserPanelComponent } from './components/user-panel/user-panel.component';
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { LabelsFilterComponent } from './components/labels-filter/labels-filter.component';
+import { ItemListComponent } from './components/item-list/item-list.component';
 
 registerLocaleData(zh);
 

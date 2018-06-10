@@ -408,7 +408,7 @@ export class LabelsFilterComponent {
   selectedTags = [];
 
   @Input() labels: string[] = [];
-  @Output() select: EventEmitter = new EventEmitter<string[]>();
+  @Output() select = new EventEmitter<string[]>();
 
   handleChange(checked: boolean, tag: string): void {
     if (checked) {
@@ -459,3 +459,30 @@ ng g ng-zorro-antd:list-basic -p app --styleext='less' --name=item-list
 ### 小结
 
 在这一小结我们完成了应用所需组件的初始化工作，为它们添加了一些必要的属性和样式，还体验了一些命令行工具来快速生成组件。接下让我们编写服务获取服务器数据。
+
+## 3 添加服务
+
+为了保持组件逻辑的清晰，我们将与视图无关的逻辑写在服务里面。比如共享的数据、API请求、数据的预处理等。
+
+在我们添加服务之前，我们需要先对现在的目录结构进行调整。把服务与组件放在不同的文件夹中方便维护。在 `src/app` 下新建两个分别名为 `services` `components` 的文件夹。
+
+然后将之前的组件全部移动到 `components` 内 (如果你使用的 IDE 没有重构功能，你还需要修改 `app.module.ts` 中的组件路径)。之后我们 `src` 的目录结构应该像下面这样：
+
+```base
+src
+├── components
+│   ├── item-list
+│   ├── labels-filter
+│   ├── layout
+│   ├── search-bar
+│   └── user-panel
+├── services
+├── app-routing.module.ts
+├── app.component.html
+├── app.component.less
+├── app.component.spec.ts
+├── app.component.ts
+└── app.module.ts
+
+```
+

@@ -7,10 +7,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class LabelsFilterComponent {
 
-  selectedTags = [];
+  selectedTags: string[] = [];
 
   @Input() labels: string[] = [];
-  @Output() select: EventEmitter = new EventEmitter<string[]>();
+  @Output() select = new EventEmitter<string[]>();
 
   handleChange(checked: boolean, tag: string): void {
     if (checked) {
