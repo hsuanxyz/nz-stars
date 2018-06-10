@@ -483,6 +483,32 @@ src
 ├── app.component.spec.ts
 ├── app.component.ts
 └── app.module.ts
-
 ```
 
+下面我们就向 `services` 文件夹中添加我们所需的服务。
+
+### 3-1 GitHub API
+
+除了我们定义的标签之外，其他数据都来源于 Github，我们现在新建一个服务用于处理它的请求。在控制台输入：
+
+```base
+ng g s services/github
+```
+
+Angualr CLI 会在 `services` 下创建一个 `github.service.ts` 文件夹。值得注意的是在 Angualr6 中，你不需要在模块中的 `providers` 字段中声明服务。相反，现在是在服务中的 `Injectable` 声明模块。默认会声明 `root` 模块，也就是说你在应用的任何地方都可以使用它。
+
+**github.service.ts**
+
+```ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GithubService {
+
+  constructor() { }
+}
+```
+
+接下来我们前往 [https://developer.github.com/v3](https://developer.github.com/v3/?) 查看我们需要使用的API。
