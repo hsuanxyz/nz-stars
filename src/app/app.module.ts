@@ -12,6 +12,8 @@ import zh from '@angular/common/locales/zh';
 import { LayoutComponent } from './layout/layout.component';
 import { UserPanelComponent } from './user-panel/user-panel.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
+import { LabelsFilterComponent } from './labels-filter/labels-filter.component';
+import { ItemListComponent } from './item-list/item-list.component';
 
 registerLocaleData(zh);
 
@@ -20,7 +22,9 @@ registerLocaleData(zh);
     AppComponent,
     LayoutComponent,
     UserPanelComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    LabelsFilterComponent,
+    ItemListComponent
   ],
   imports: [
     BrowserModule,

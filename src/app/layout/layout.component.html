@@ -10,14 +10,14 @@
   </nz-header>
   <nz-layout class="main">
     <nz-sider [nzWidth]="350" class="side">
-      <div class="tags-wrap">
-        <!--TODO 标签管理-->
+      <div class="labels-wrap">
+        <app-labels-filter></app-labels-filter>
       </div>
     </nz-sider>
     <nz-layout>
       <nz-content class="content">
         <div class="item-list-wrap">
-          <!--TODO 项目列表-->
+          <app-item-list></app-item-list>
         </div>
       </nz-content>
     </nz-layout>
