@@ -555,3 +555,175 @@ getStarred() {
 
 现在你可以尝试在某个组件里注入 `GithubService` 服务，并调用里面的方法，查看数据返回。
 
+### 3-2 持久化储存
+
+我们不希望用户每次进入都需要重新输入用户名，同时我们还需要储存用户自定义的标签。所以我们需要编写一个服务来管理这些本地数据。
+
+在控制台输入以下命令生成 `AppStorageService` 服务:
+
+```base
+ng g s services/app-storage
+```
+
+这里我们使用 [localStorage](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/localStorage) 储存本地数据，并且给每个 `key` 添加一个前缀避免命名冲突。同时以用户名作为作用域储存用户标签。
+为文件添加以下方法：
+
+**app-storage.service.ts**
+
+```ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AppStorageService {
+
+  PREFIX = 'app';
+
+  constructor() { }
+
+  setUsername(username: string) {
+    localStorage.setItem(`${this.PREFIX}-username`, username);
+  }
+
+  getUsername(): string | null {
+    return JSON.stringify(localStorage.getItem(`${this.PREFIX}-username`));
+  }
+
+  setLabels(labels: string[], username: string) {
+    localStorage.setItem(`${this.PREFIX}-${username}/labels`, JSON.stringify(labels));
+  }
+
+  getLabels(username: string): string[] | null {
+    return JSON.parse(localStorage.getItem(`${this.PREFIX}-${username}/labels`));
+  }
+}
+```
+
+有的同学可能会发现这个服务里面的多个方法依赖了 `username`, 但是如同上面说的，在我们的应用里面用户名是相对固定的。难道我们给这个服务也添加一个 `registerUsername` 方法保存用户名吗？有没有什么更好的办法呢？
+
+### 3-3 Authentication 认证
+
+接着上小结提出的问题，我们添加 Authentication 服务来解决这个问题。在真实的应用中，这个服务大多用于储存当前用户信息、管理用户权限、管理 token 的问题。也就说用在咱们这个不需要管理权限的应用里面是不合适的，但是为了更贴近真实环境，我们还是打算这么做。
+
+在控制台输入以下命令生成 `AuthService`:
+
+```base
+ng g s services/auth
+```
+
+并且添加如下内容:
+
+**auth.service.ts**
+
+```ts
+import { Injectable } from '@angular/core';
+import { AppStorageService } from './app-storage.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+
+  username: string;
+
+  constructor(private appStorageService: AppStorageService) { }
+
+  /** 注册用户 */
+  registerUsername(username: string) {
+    this.username = username;
+    this.appStorageService.setUsername(username);
+  }
+
+  /** 在首次进入 app 调用，恢复到之前的用户 */
+  recovery() {
+    this.registerUsername(this.appStorageService.getUsername());
+  }
+}
+```
+
+现在我们修改其他文件内容，让 `AuthService ` 管理整个应用的用户信息。
+
+**github.service.ts**
+
+```ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from './auth.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GithubService {
+
+  API_URL = 'https://api.github.com';
+
+  constructor(private http: HttpClient, private authService: AuthService) { }
+
+  getUserInfo() {
+    return this.http.get(`${this.API_URL}/users/${this.authService.username}`);
+  }
+
+  getStarred() {
+    return this.http.get(`${this.API_URL}/users/${this.authService.username}/starred`);
+  }
+}
+```
+
+**app-storage.service.ts**
+
+```ts
+import { Injectable } from '@angular/core';
+import { AuthService } from './auth.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AppStorageService {
+
+  PREFIX = 'app';
+
+  constructor(private authService: AuthService) { }
+
+  setUsername(username: string) {
+    localStorage.setItem(`${this.PREFIX}-username`, username);
+  }
+
+  getUsername(): string | null {
+    return JSON.stringify(localStorage.getItem(`${this.PREFIX}-username`));
+  }
+
+  setLabels(labels: string[]) {
+    const username = this.authService.username;
+    localStorage.setItem(`${this.PREFIX}-${username}/labels`, JSON.stringify(labels));
+  }
+
+  getLabels(): string[] | null {
+    const username = this.authService.username;
+    return JSON.parse(localStorage.getItem(`${this.PREFIX}-${username}/labels`));
+  }
+}
+```
+
+之后在 `AppComponent` 中调用 `recovery` 方法从历史保存中获取用户名。
+
+**app.component.ts**
+
+```ts
+import { Component } from '@angular/core';
+import { AuthService } from './services/auth.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.less']
+})
+export class AppComponent {
+  title = 'app';
+
+  constructor(private authService: AuthService) {
+    this.authService.recovery();
+  }
+
+}
+```

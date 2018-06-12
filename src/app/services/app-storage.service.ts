@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,7 @@ export class AppStorageService {
 
   PREFIX = 'app';
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   setUsername(username: string) {
     localStorage.setItem(`${this.PREFIX}-username`, username);
@@ -17,11 +18,13 @@ export class AppStorageService {
     return JSON.stringify(localStorage.getItem(`${this.PREFIX}-username`));
   }
 
-  setLabels(labels: string[], username: string) {
+  setLabels(labels: string[]) {
+    const username = this.authService.username;
     localStorage.setItem(`${this.PREFIX}-${username}/labels`, JSON.stringify(labels));
   }
 
-  getLabels(username: string): string[] | null {
+  getLabels(): string[] | null {
+    const username = this.authService.username;
     return JSON.parse(localStorage.getItem(`${this.PREFIX}-${username}/labels`));
   }
 }
