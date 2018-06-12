@@ -495,7 +495,7 @@ src
 ng g s services/github
 ```
 
-Angualr CLI 会在 `services` 下创建一个 `github.service.ts` 文件夹。值得注意的是在 Angualr6 中，你不需要在模块中的 `providers` 字段中声明服务。相反，现在是在服务中的 `Injectable` 声明模块。默认会声明 `root` 模块，也就是说你在应用的任何地方都可以使用它。
+Angualr CLI 会在 `services` 下创建一个 `github.service.ts` 文件。值得注意的是在 Angualr6 中，你不需要在模块中的 `providers` 字段中声明服务。相反，现在是在服务中的 `Injectable` 声明模块。默认会声明 `root` 模块，也就是说你在应用的任何地方都可以使用它。
 
 为了处理 `http` 请求，我们需要将 `HttpClient` 类注入到 `GithubService` 中，就像下面这样：
 
@@ -514,4 +514,44 @@ export class GithubService {
 }
 ```
 
-接下来我们前往 [https://developer.github.com/v3](https://developer.github.com/v3/?) 查看我们需要使用的API。
+接下来前往 [https://developer.github.com/v3](https://developer.github.com/v3/?) 查看需要使用的API。我们主要会用到下面的 REST API:
+
+- GET - [users/:username](https://developer.github.com/v3/users/#get-a-single-user) 获取用户信息
+- GET - [users/:username/starred](https://developer.github.com/v3/activity/starring/#list-repositories-being-starred) 获取用户收藏的仓库
+
+从上面的 API 可以看到，我们的 `username` 在一个完整的应用流程里面是固定的，因此我们编写一个 `registerUsername` 方法来寄存用户名。添加一个储存 API 地址的常量。
+
+```ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GithubService {
+
+  API_URL = 'https://api.github.com';
+  username: string;
+  
+  constructor(private http: HttpClient) { }
+
+  registerUsername(username: string) {
+    this.username = username;
+  }
+}
+```
+
+之后添加 `getUserInfo` 与 `getStarred` 两个请求方法。
+
+```ts
+getUserInfo() {
+    return this.http.get(`${this.API_URL}/users/${this.username}`);
+  }
+
+getStarred() {
+	return this.http.get(`${this.API_URL}/users/${this.username}/starred`);
+}
+```
+
+现在你可以尝试在某个组件里注入 `GithubService` 服务，并调用里面的方法，查看数据返回。
+

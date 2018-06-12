@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GithubService } from "../../services/github.service";
 
 @Component({
   selector: 'app-user-panel',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserPanelComponent implements OnInit {
 
-  constructor() { }
+  constructor(private githubService: GithubService) { }
 
   ngOnInit() {
+    this.githubService.registerUsername('hsuanxyz');
+    this.githubService.getUserInfo()
+    .subscribe(user => {
+      console.log(user)
+    })
   }
 
 }
