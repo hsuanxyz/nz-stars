@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { AppStorageService } from "./services/app-storage.service";
 
 @Component({
   selector: 'app-root',
@@ -7,12 +8,14 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent implements OnInit {
-  title = 'app';
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private appStorageService: AppStorageService) {
   }
 
   ngOnInit() {
-    this.authService.recovery();
+    const username = this.appStorageService.getUsername();
+    if (username) {
+      this.authService.registerUsername(username);
+    }
   }
 }

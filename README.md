@@ -618,7 +618,6 @@ ng g s services/auth
 
 ```ts
 import { Injectable } from '@angular/core';
-import { AppStorageService } from './app-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -627,18 +626,12 @@ export class AuthService {
 
   username: string;
 
-  constructor(private appStorageService: AppStorageService) { }
+  constructor() { }
 
-  /** 注册用户 */
   registerUsername(username: string) {
     this.username = username;
-    this.appStorageService.setUsername(username);
   }
 
-  /** 在首次进入 app 调用，恢复到之前的用户 */
-  recovery() {
-    this.registerUsername(this.appStorageService.getUsername());
-  }
 }
 ```
 
@@ -705,13 +698,14 @@ export class AppStorageService {
 }
 ```
 
-之后在 `AppComponent` 中调用 `recovery` 方法从历史保存中获取用户名。
+之后在 `AppComponent` 中调用 `getUsername` 方法从历史保存中获取用户名。
 
 **app.component.ts**
 
 ```ts
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { AppStorageService } from "./services/app-storage.service";
 
 @Component({
   selector: 'app-root',
@@ -719,13 +713,15 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent implements OnInit {
-  title = 'app';
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private appStorageService: AppStorageService) {
   }
 
   ngOnInit() {
-    this.authService.recovery();
+    const username = this.appStorageService.getUsername();
+    if (username) {
+      this.authService.registerUsername(username);
+    }
   }
 }
 ```
@@ -736,7 +732,7 @@ export class AppComponent implements OnInit {
 
 在实际的开发中我们经常遇到类似的问题，比如切换用户的时候，经常需要多个组件做出相应的处理。面对这样的问题，我们尝试各种解决办法，甚至动用 `setTimeout` `setInterval`。
 
-在这种情况我们可以现在 RxJs 的 `Subject` 来推送事件，这样每个依赖与这个值的组件就可以做出相应的处理。
+在这种情况我们可以使用 RxJs 的 `Subject` 来推送事件，这样每个依赖与这个值的组件就可以做出相应的处理。
 
 修改以下文件:
 
@@ -744,7 +740,6 @@ export class AppComponent implements OnInit {
 
 ```ts
 import { Injectable } from '@angular/core';
-import { AppStorageService } from './app-storage.service';
 import { Subject } from 'rxjs/internal/Subject';
 
 @Injectable({
@@ -755,18 +750,13 @@ export class AuthService {
   username: string;
   addUser = new Subject<string>();
 
-  constructor(private appStorageService: AppStorageService) { }
+  constructor() { }
 
-  /** 注册用户 */
   registerUsername(username: string) {
     this.username = username;
-    this.appStorageService.setUsername(username);
-    this.addUser.next(username); // 发送事件
+    this.addUser.next(username);
   }
 
-  /** 在首次进入 app 调用，恢复到之前的用户 */
-  recovery() {
-    this.registerUsername(this.appStorageService.getUsername());
-  }
 }
+
 ```
