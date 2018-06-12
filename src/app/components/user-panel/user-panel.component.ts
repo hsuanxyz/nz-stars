@@ -11,11 +11,7 @@ export class UserPanelComponent implements OnInit {
   constructor(private githubService: GithubService) { }
 
   ngOnInit() {
-    this.githubService.registerUsername('hsuanxyz');
-    this.githubService.getUserInfo()
-    .subscribe(user => {
-      console.log(user)
-    })
+
   }
 
 }

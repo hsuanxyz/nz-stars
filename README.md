@@ -642,7 +642,7 @@ export class AuthService {
 }
 ```
 
-现在我们修改其他文件内容，让 `AuthService ` 管理整个应用的用户信息。
+现在我们修改其他文件内容，让 `AuthService` 管理整个应用的用户信息。
 
 **github.service.ts**
 
@@ -710,7 +710,7 @@ export class AppStorageService {
 **app.component.ts**
 
 ```ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -718,12 +718,55 @@ import { AuthService } from './services/auth.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'app';
 
   constructor(private authService: AuthService) {
-    this.authService.recovery();
   }
 
+  ngOnInit() {
+    this.authService.recovery();
+  }
+}
+```
+
+### 3-4 可跨组件通信
+
+完成了上面的 `AuthService` 服务后，我们面临着一个问题。**如何知道用户在何时被添加呢？**
+
+在实际的开发中我们经常遇到类似的问题，比如切换用户的时候，经常需要多个组件做出相应的处理。面对这样的问题，我们尝试各种解决办法，甚至动用 `setTimeout` `setInterval`。
+
+在这种情况我们可以现在 RxJs 的 `Subject` 来推送事件，这样每个依赖与这个值的组件就可以做出相应的处理。
+
+修改以下文件:
+
+**auth.service.ts**
+
+```ts
+import { Injectable } from '@angular/core';
+import { AppStorageService } from './app-storage.service';
+import { Subject } from 'rxjs/internal/Subject';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+
+  username: string;
+  addUser = new Subject<string>();
+
+  constructor(private appStorageService: AppStorageService) { }
+
+  /** 注册用户 */
+  registerUsername(username: string) {
+    this.username = username;
+    this.appStorageService.setUsername(username);
+    this.addUser.next(username); // 发送事件
+  }
+
+  /** 在首次进入 app 调用，恢复到之前的用户 */
+  recovery() {
+    this.registerUsername(this.appStorageService.getUsername());
+  }
 }
 ```
