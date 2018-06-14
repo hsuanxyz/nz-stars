@@ -7,111 +7,7 @@
 - 搜索框
 - 项目列表
 
-### 2-0 打扫新房
-
-让我们清理 `layout` 组件，为接下来的组件腾出位置，之后我们会回来编辑它。
-
-删除多余的 html，并且给每个部分添加 calss，用于调整样式。
-
-**layout.component.html**
-
-```html
-<nz-layout class="layout">
-  <nz-header class="header">
-    <div class="title">Stars Manager</div>
-    <div class="search-bar-wrap">
-      <!--TODO 搜索框-->
-    </div>
-    <div class="user-pane-wrap">
-      <!--TODO 用户面板-->
-    </div>
-  </nz-header>
-  <nz-layout class="main">
-    <nz-sider [nzWidth]="350" class="side">
-      <div class="labels-wrap">
-        <!--TODO 标签筛选-->
-      </div>
-    </nz-sider>
-    <nz-layout>
-      <nz-content class="content">
-        <div class="item-list-wrap">
-          <!--TODO 项目列表-->
-        </div>
-      </nz-content>
-    </nz-layout>
-  </nz-layout>
-</nz-layout>
-```
-
-**layout.component.less**
-
-```less
-@side-width: 350px; // 侧边栏宽度
-@header-height: 64px; // 头部高度
-
-.layout {
-  width: 100%;
-  height: 100%;
-}
-
-.header {
-  position: fixed;
-  z-index: 1;
-  display: flex;
-  top: 0;
-  width: 100%;
-  height: @header-height;
-  background: #fff;
-  box-shadow: 0 2px 8px #f0f1f2;
-
-  .title {
-    font-size: 20px;
-    text-align: left;
-    text-transform: uppercase;
-    width: @side-width - 50;
-  }
-
-  .search-bar-wrap {
-    flex: 1 1 auto;
-    padding-right: 36px
-  }
-
-  .user-pane-wrap {
-    height: 64px;
-    max-width: 300px;
-  }
-
-}
-
-.main {
-  margin-top: @header-height;
-  position: relative;
-
-  .side {
-    background: #fff;
-    border-right: 1px solid #e9e9e9;
-
-    .labels-wrap {
-      margin: 10px;
-    }
-  }
-
-  .content {
-    height: 100%;
-    overflow: auto;
-    background: #fff;
-
-    .item-list-wrap {
-      margin: 10px;
-    }
-  }
-
-}
-```
-
-现在你的应用应该是一片空白，没关系，接下来我们来编写每个部分的组件。
-
-### 2-1 用户面板
+## 用户面板
 
 命令行输入以下命令生成一个空白的组件：
 
@@ -166,7 +62,7 @@ ng g c user-panel # 生成 src/app/user-panel
 }
 ```
  
-### 2-2 搜索框
+## 搜索框
 
 然后输入一下命令生成一个带前缀图标以及清除按钮的搜索框组件：
 
@@ -266,7 +162,7 @@ export class SearchBarComponent {
 
 我们的头部组件已经完成，下面我们来编写侧边栏的标签筛选组件。
 
-### 2-3 标签筛选
+## 标签筛选
 
 在命令行输入一下命令，生成一个可选标签组件：
 
@@ -359,7 +255,7 @@ export class LabelsFilterComponent {
 </nz-card>
 ```
 
-### 2-4 项目列表
+## 项目列表
 
 在命令行输入一下命令，生成一个列表组件。
 
@@ -383,6 +279,6 @@ ng g ng-zorro-antd:list-basic -p app --styleext='less' --name=item-list
 
 ![list](./screenshots/2-4-list.png)
 
-### 小结
+## 小结
 
 在这一小结我们完成了应用所需组件的初始化工作，为它们添加了一些必要的属性和样式，还体验了一些命令行工具来快速生成组件。接下让我们编写服务获取服务器数据。
