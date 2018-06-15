@@ -1,6 +1,8 @@
-<nz-avatar nzIcon="anticon anticon-user"></nz-avatar>
-<div class="username">用户名</div>
+<nz-avatar nzIcon="anticon anticon-user" [nzSrc]="user?.avatar_url"></nz-avatar>
+<div class="username">{{user?.login}}</div>
 <div class="add-user">
-  <a *ngIf="false">添加用户</a>
-  <a>切换</a>
+  <a (click)="openModal()">{{user ? '切换' : '添加用户'}}</a>
 </div>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="绑定用户" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkLoading]="isLoading">
+  <input type="text" nz-input placeholder="输入你的 GitHub 用户名" [(ngModel)]="username">
+</nz-modal>
