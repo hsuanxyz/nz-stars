@@ -13,9 +13,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    const username = this.appStorageService.getUsername();
-    if (username) {
-      this.authService.registerUsername(username);
-    }
+
   }
 }

@@ -1,22 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { GithubService } from '../../services/github.service';
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html'
 })
-export class ItemListComponent {
-  data = [
-    {
-      title: 'Ant Design Title 1'
-    },
-    {
-      title: 'Ant Design Title 2'
-    },
-    {
-      title: 'Ant Design Title 3'
-    },
-    {
-      title: 'Ant Design Title 4'
+export class ItemListComponent implements OnDestroy {
+  data = [];
+
+  addUserSubscription: Subscription;
+
+  constructor(private authService: AuthService, private githubService: GithubService) {
+    this.addUserSubscription = this.authService.addUser.subscribe(() => this.getStarredRepo());
+  }
+
+  getStarredRepo() {
+    this.githubService.getStarred()
+    .subscribe(res => {
+      this.data = res;
+      console.log(this.data);
+    })
+  }
+
+  ngOnDestroy(): void {
+    if (this.addUserSubscription) {
+      this.addUserSubscription.unsubscribe()
     }
-  ];
+  }
 }

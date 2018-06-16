@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GithubService } from '../../services/github.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector   : 'app-user-panel',
@@ -13,7 +14,7 @@ export class UserPanelComponent implements OnInit {
   user: any;
   username: string;
 
-  constructor(private githubService: GithubService) {
+  constructor(private githubService: GithubService, private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -35,6 +36,7 @@ export class UserPanelComponent implements OnInit {
       if (res.id) {
         this.user = res;
         this.isVisible = false;
+        this.authService.registerUsername(this.username);
       } else {
         this.user = null;
       }

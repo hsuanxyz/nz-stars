@@ -164,7 +164,7 @@ export class UserPanelComponent implements OnInit {
 
 所以我们可以在这种情况下使用 RxJs 的 `Subject` 来将值发送给它的订阅者。
 
-首先我们添加 Authentication 服务，这里只是象征意义的使用它。在真实的应用中，这个服务大多用于储存当前用户信息、管理用户权限、管理 token 的问题。
+首先我们添加 Authentication 服务，这里只是象征意义的使用它。在真实的应用中，这个服务大多用于储存当前用户信息、管理用户权限、管理 token 等...
 
 在控制台输入以下命令生成 `AuthService`:
 
@@ -197,3 +197,153 @@ export class AuthService {
 
 }
 ```
+
+接下来在 `UserPanelComponent` 注入服务，在获取用户信息成功后调用 `registerUsername` 方法。
+
+**user-panel.component.ts**
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { GithubService } from '../../services/github.service';
+import { AuthService } from '../../services/auth.service';
+
+@Component({
+  selector   : 'app-user-panel',
+  templateUrl: './user-panel.component.html',
+  styleUrls  : [ './user-panel.component.less' ]
+})
+export class UserPanelComponent implements OnInit {
+
+  isVisible = false;
+  isLoading = false;
+  user: any;
+  username: string;
+
+  constructor(private githubService: GithubService, private authService: AuthService) {
+  }
+
+  ngOnInit() {
+
+  }
+
+  openModal() {
+    this.isVisible = true;
+  }
+
+  handleCancel() {
+    this.isVisible = false;
+  }
+
+  handleOk() {
+    this.isLoading = true;
+    this.githubService.getUserInfo(this.username)
+    .subscribe(res => {
+      if (res.id) {
+        this.user = res;
+        this.isVisible = false;
+        this.authService.registerUsername(this.username);
+      } else {
+        this.user = null;
+      }
+      this.isLoading = false;
+    }, () => {
+      this.isLoading = false;
+    });
+  }
+}
+```
+
+在 `GithubService` 中注入服务，然后在 `getStarred` 方法中使用 `AuthService` 的 `username` 属性。
+
+**github.service.ts**
+
+```ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from './auth.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GithubService {
+
+  API_URL = 'https://api.github.com';
+
+  constructor(private http: HttpClient, private authService: AuthService) { }
+
+  getUserInfo(username) {
+    return this.http.get<any>(`${this.API_URL}/users/${username}`);
+  }
+
+  getStarred() {
+    return this.http.get<any>(`${this.API_URL}/users/${this.authService.username}/starred`);
+  }
+}
+```
+
+最后在 `ItemListComponent` 组件中订阅 `addUser`，并调用 `getStarred` 方法，获取用户 starred 的库，并且循环渲染在页面上。
+
+**item-list.component.ts**
+
+```ts
+import { Component, OnDestroy } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { GithubService } from '../../services/github.service';
+import { Subscription } from "rxjs";
+
+@Component({
+  selector: 'app-item-list',
+  templateUrl: './item-list.component.html'
+})
+export class ItemListComponent implements OnDestroy {
+  data = [];
+
+  addUserSubscription: Subscription;
+
+  constructor(private authService: AuthService, private githubService: GithubService) {
+    this.addUserSubscription = this.authService.addUser.subscribe(() => this.getStarredRepo());
+  }
+
+  getStarredRepo() {
+    this.githubService.getStarred()
+    .subscribe(res => {
+      this.data = res;
+      console.log(this.data);
+    })
+  }
+
+  ngOnDestroy(): void {
+    if (this.addUserSubscription) {
+      this.addUserSubscription.unsubscribe()
+    }
+  }
+}
+```
+
+**item-list.component.html**
+
+```html
+<nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
+  <ng-template #item let-item>
+    <nz-list-item>
+      <nz-list-item-meta
+        [nzTitle]="nzTitle"
+        [nzAvatar]="item.owner.avatar_url"
+        [nzDescription]="item.description">
+        <ng-template #nzTitle>
+          <a [href]="item.url">{{item.name}}</a>&nbsp;
+          <small><i class="anticon anticon-star"></i> {{item.stargazers_count}}</small>
+        </ng-template>
+      </nz-list-item-meta>
+    </nz-list-item>
+  </ng-template>
+</nz-list>
+```
+
+最终效果如下
+
+![get-starred](./screenshots/get-starred.gif)
+
+
+
+
