@@ -1,6 +1,10 @@
 # 标签管理
 
-本章我们会完成标签的增删查功能，因为 GitHub 没有自定义标签的功能，所以我需要编写一个服务并使用 [localStorage](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/localStorage) 储存与用户相关联的标签。
+本章我们会完成标签的增删查功能，因为 GitHub 没有自定义标签的功能，所以我需要编写一个服务储存与用户相关联的标签。
+
+## 使用 localStorage
+
+这里我们使用 [localStorage](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/localStorage) 在本地存取用户标签。
 
 在命令行输入以下命令创建一个 `LabelService` 服务:
 
