@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { AppStorageService } from "./services/app-storage.service";
 
 @Component({
   selector: 'app-root',
@@ -9,7 +8,7 @@ import { AppStorageService } from "./services/app-storage.service";
 })
 export class AppComponent implements OnInit {
 
-  constructor(private authService: AuthService, private appStorageService: AppStorageService) {
+  constructor(private authService: AuthService) {
   }
 
   ngOnInit() {
