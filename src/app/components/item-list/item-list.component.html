@@ -1,15 +1,17 @@
-<nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
-  <ng-template #item let-item>
-    <nz-list-item>
-      <nz-list-item-meta
-        [nzTitle]="nzTitle"
-        [nzAvatar]="item.owner.avatar_url"
-        [nzDescription]="item.description">
-        <ng-template #nzTitle>
-          <a [href]="item.url">{{item.name}}</a>&nbsp;
-          <small><i class="anticon anticon-star"></i> {{item.stargazers_count}}</small>
-        </ng-template>
-      </nz-list-item-meta>
-    </nz-list-item>
-  </ng-template>
-</nz-list>
+<nz-spin [nzSpinning]="loading">
+  <nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
+    <ng-template #item let-item>
+      <nz-list-item>
+        <nz-list-item-meta
+          [nzTitle]="nzTitle"
+          [nzAvatar]="item.owner.avatar_url"
+          [nzDescription]="item.description">
+          <ng-template #nzTitle>
+            <a [href]="item.url">{{item.name}}</a>&nbsp;
+            <small><i class="anticon anticon-star"></i> {{item.stargazers_count}}</small>
+          </ng-template>
+        </nz-list-item-meta>
+      </nz-list-item>
+    </ng-template>
+  </nz-list>
+</nz-spin>

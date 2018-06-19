@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { GithubService } from '../../services/github.service';
-import { Subscription } from "rxjs";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-item-list',
@@ -9,6 +9,7 @@ import { Subscription } from "rxjs";
 })
 export class ItemListComponent implements OnDestroy {
   data = [];
+  loading = false;
 
   addUserSubscription: Subscription;
 
@@ -17,16 +18,17 @@ export class ItemListComponent implements OnDestroy {
   }
 
   getStarredRepo() {
+    this.loading = true;
     this.githubService.getStarred()
     .subscribe(res => {
       this.data = res;
-      console.log(this.data);
-    })
+      this.loading = false;
+    });
   }
 
   ngOnDestroy(): void {
     if (this.addUserSubscription) {
-      this.addUserSubscription.unsubscribe()
+      this.addUserSubscription.unsubscribe();
     }
   }
 }

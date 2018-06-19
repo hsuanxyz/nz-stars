@@ -283,7 +283,7 @@ export class GithubService {
 
 ## 获取列表
 
-最后在 `ItemListComponent` 组件中订阅 `addUser`，并调用 `getStarred` 方法，获取用户 starred 的库，并且循环渲染在页面上。
+最后在 `ItemListComponent` 组件中订阅 `addUser`，并调用 `getStarred` 方法，获取用户 starred 的库，并且循环渲染在页面上。同时使用 `nz-spin` 组件显示加载动画。
 
 **item-list.component.ts**
 
@@ -291,7 +291,7 @@ export class GithubService {
 import { Component, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { GithubService } from '../../services/github.service';
-import { Subscription } from "rxjs";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-item-list',
@@ -299,6 +299,7 @@ import { Subscription } from "rxjs";
 })
 export class ItemListComponent implements OnDestroy {
   data = [];
+  loading = false;
 
   addUserSubscription: Subscription;
 
@@ -307,16 +308,17 @@ export class ItemListComponent implements OnDestroy {
   }
 
   getStarredRepo() {
+    this.loading = true;
     this.githubService.getStarred()
     .subscribe(res => {
       this.data = res;
-      console.log(this.data);
-    })
+      this.loading = false;
+    });
   }
 
   ngOnDestroy(): void {
     if (this.addUserSubscription) {
-      this.addUserSubscription.unsubscribe()
+      this.addUserSubscription.unsubscribe();
     }
   }
 }
@@ -325,26 +327,24 @@ export class ItemListComponent implements OnDestroy {
 **item-list.component.html**
 
 ```html
-<nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
-  <ng-template #item let-item>
-    <nz-list-item>
-      <nz-list-item-meta
-        [nzTitle]="nzTitle"
-        [nzAvatar]="item.owner.avatar_url"
-        [nzDescription]="item.description">
-        <ng-template #nzTitle>
-          <a [href]="item.url">{{item.name}}</a>&nbsp;
-          <small><i class="anticon anticon-star"></i> {{item.stargazers_count}}</small>
-        </ng-template>
-      </nz-list-item-meta>
-    </nz-list-item>
-  </ng-template>
-</nz-list>
+<nz-spin [nzSpinning]="loading">
+  <nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
+    <ng-template #item let-item>
+      <nz-list-item>
+        <nz-list-item-meta
+          [nzTitle]="nzTitle"
+          [nzAvatar]="item.owner.avatar_url"
+          [nzDescription]="item.description">
+          <ng-template #nzTitle>
+            <a [href]="item.url">{{item.name}}</a>&nbsp;
+            <small><i class="anticon anticon-star"></i> {{item.stargazers_count}}</small>
+          </ng-template>
+        </nz-list-item-meta>
+      </nz-list-item>
+    </ng-template>
+  </nz-list>
+</nz-spin>
 ```
-
-最终效果如下
-
-![get-starred](./screenshots/get-starred.gif)
 
 ## 自动分页
 
@@ -415,6 +415,10 @@ export class GithubService {
   }
 }
 ```
+
+最终效果如下
+
+![get-starred](./screenshots/get-starred.gif)
 
 
 
