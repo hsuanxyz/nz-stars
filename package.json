@@ -22,6 +22,7 @@
     "@angular/router": "^6.0.3",
     "core-js": "^2.5.4",
     "ng-zorro-antd": "^1.0.0-rc.0",
+    "parse-link-header": "^1.0.1",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"
   },
@@ -33,6 +34,7 @@
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
+    "@types/parse-link-header": "^1.0.0",
     "codelyzer": "~4.2.1",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",

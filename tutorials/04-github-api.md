@@ -281,6 +281,8 @@ export class GithubService {
 }
 ```
 
+## 获取列表
+
 最后在 `ItemListComponent` 组件中订阅 `addUser`，并调用 `getStarred` 方法，获取用户 starred 的库，并且循环渲染在页面上。
 
 **item-list.component.ts**
@@ -343,6 +345,77 @@ export class ItemListComponent implements OnDestroy {
 最终效果如下
 
 ![get-starred](./screenshots/get-starred.gif)
+
+## 自动分页
+
+[users/:username/starred](https://developer.github.com/v3/activity/starring/#list-repositories-being-starred) 接口每次最多只能获取 100 条数据，而我们之后要实现本地的标签分类与本地搜索，所以我们实现自动分页需要获取用户全部的收藏。
+
+与传统的分页接口不同，GitHub API 的分页是按照 [Web Linking](https://tools.ietf.org/html/rfc5988) 放在 Response Headers 的 `Link` 字段中：
+
+```http
+Link: <https://api.github.com/user/22736418/starred?page=2>; rel="next", <https://api.github.com/user/22736418/starred?page=13>; rel="last"
+```
+
+所以我门需要解析 `Link` 字段，并获取总条数，再自动的发起分页请求获取所有数据后返回。这里我们需要一个第三方库 [parse-link-header](https://github.com/thlorenz/parse-link-header) 用于解析，在控制台输入以下命令安装:
+
+```base
+$ npm i parse-link-header
+$ npm i @types/parse-link-header -D
+```
+
+之后修改我们的 `getStarred` 方法，在数据返回后解析 `Link` 字段判断是否有多页，如果存在多页则循环创建多个 `Observable`，然后使用 `concatAll` 操作符链接；最后使用 `reduce` 操作符将结果合并返回。
+
+**github.service.ts**
+
+```ts
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+
+import * as parse from 'parse-link-header';
+
+import { AuthService } from './auth.service';
+
+import { from, of } from 'rxjs';
+import { concatAll, mergeMap, reduce } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GithubService {
+
+  API_URL = 'https://api.github.com';
+
+  constructor(private http: HttpClient, private authService: AuthService) {
+  }
+
+  getUserInfo(username) {
+    return this.http.get<any>(`${this.API_URL}/users/${username}`);
+  }
+
+  getStarred(index: number = 1) {
+    return this.http.get<any[]>(
+      `${this.API_URL}/users/${this.authService.username}/starred?per_page=100&page=${index}`,
+      { observe: 'response' }
+    ).pipe(
+      mergeMap((res: HttpResponse<any>) => {
+        const link = parse(res.headers.get('Link'));
+        if (index === 1 && link && link.next && link.last) {
+          const page = parseInt(link.last.page, 10);
+          const observables = [];
+          for (let i = 1; i < page; i++) {
+            observables.push(this.getStarred(i + 1));
+          }
+          return from([of(res.body), ...observables]).pipe(concatAll());
+        } else {
+          return from(of(res.body));
+        }
+      }),
+      reduce((total: any[], current: any[]): any[] => [...total, ...current])
+    );
+  }
+}
+```
+
 
 
 
