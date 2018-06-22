@@ -352,7 +352,7 @@ export class ItemListComponent implements OnDestroy {
       <div class="title-wrap">
         <nz-avatar class="avatar" nzIcon="anticon anticon-user" [nzSrc]="item.owner.avatar_url"></nz-avatar>
         <h4 class="title">
-          <a>{{item.name}}</a> &nbsp;
+          <a [href]="item.html_url" target="_blank">{{item.full_name}}</a> &nbsp;
           <small><i class="anticon anticon-star"></i> {{item.stargazers_count}}</small>
         </h4>
         <!--tags-->
@@ -361,6 +361,7 @@ export class ItemListComponent implements OnDestroy {
     </li>
   </ul>
 </nz-spin>
+
 ```
 
 ## 自动分页

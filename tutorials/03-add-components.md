@@ -294,8 +294,7 @@ ng g c item-list
 ```less
 ul.list {
   list-style-type: none;
-  margin-top: 10px;
-  padding: 0;
+  padding: 10px 20px;
   min-height: 100px;
 
   li.item {
