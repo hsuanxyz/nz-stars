@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { GithubService } from '../../services/github.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -14,6 +14,8 @@ export class UserPanelComponent implements OnInit {
   user: any;
   username: string;
 
+  @ViewChild('userInput') userInput: ElementRef<HTMLInputElement>;
+
   constructor(private githubService: GithubService, private authService: AuthService) {
   }
 
@@ -23,6 +25,10 @@ export class UserPanelComponent implements OnInit {
 
   openModal() {
     this.isVisible = true;
+    setTimeout(() => {
+      this.userInput.nativeElement.focus();
+      this.userInput.nativeElement.setSelectionRange(0, this.username ? this.username.length : 0);
+    }, 100);
   }
 
   handleCancel() {

@@ -90,15 +90,27 @@ export class GithubService {
 
 这里我们需要用到 NG-ZORRO 的 `nz-modal` 组件创建一个弹出框供用户输入用户名，之后再调用 `GithubService` 服务从线上获取用户信息。
 
+需要注意的是，我们在 `openModal`  方法中还针对 `input` 标签 执行了 `focus` 与 `setSelectionRange` 方法，这能使用户打开模态框时自动聚焦输入框并且选中类容。
+这里的 `input` 时通过[模版引用变量](https://angular.cn/guide/template-syntax#ref-vars) 获取的。
+
+此外我我们还在 `input` 上绑定了 `(keydown.enter)` 事件，当用户回车时执行 `handleOk` 方法。
+类似这样的属性写发还有:
+ 
+ - 绑定类名: `[class.my-class]="..."` 
+ - 绑定样式: `[style.background-color]="..."` 
+ - 绑定按键: `(keydown.enter)="..."` `(keydown.tab)="..."` `(keydown.f4)="..."` `(keydown.9)="..."`
+ - 绑定组合键: `(keydown.shift.arrowdown)="..."` `(keydown.shift.control.z)="..."`
+
 **user-panel.component.ts**
 
 ```ts
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { GithubService } from '../../services/github.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector   : 'app-user-panel',
-  templateUrl: './user-panel.component.html',
+  templateUrl: './user-panel.component.html'
   styleUrls  : [ './user-panel.component.less' ]
 })
 export class UserPanelComponent implements OnInit {
@@ -108,7 +120,9 @@ export class UserPanelComponent implements OnInit {
   user: any;
   username: string;
 
-  constructor(private githubService: GithubService) {
+  @ViewChild('userInput') userInput: ElementRef<HTMLInputElement>;
+
+  constructor(private githubService: GithubService, private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -117,6 +131,10 @@ export class UserPanelComponent implements OnInit {
 
   openModal() {
     this.isVisible = true;
+    setTimeout(() => {
+      this.userInput.nativeElement.focus();
+      this.userInput.nativeElement.setSelectionRange(0, this.username ? this.username.length : 0);
+    }, 100);
   }
 
   handleCancel() {
@@ -130,6 +148,7 @@ export class UserPanelComponent implements OnInit {
       if (res.id) {
         this.user = res;
         this.isVisible = false;
+        this.authService.registerUsername(this.username);
       } else {
         this.user = null;
       }
@@ -150,7 +169,7 @@ export class UserPanelComponent implements OnInit {
   <a (click)="openModal()">{{user ? '切换' : '添加用户'}}</a>
 </div>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="绑定用户" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkLoading]="isLoading">
-  <input type="text" nz-input placeholder="输入你的 GitHub 用户名" [(ngModel)]="username">
+  <input #userInput type="text" nz-input placeholder="输入你的 GitHub 用户名" [(ngModel)]="username" (keydown.enter)="handleOk()">
 </nz-modal>
 ```
 

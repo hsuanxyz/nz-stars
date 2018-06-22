@@ -4,5 +4,5 @@
   <a (click)="openModal()">{{user ? '切换' : '添加用户'}}</a>
 </div>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="绑定用户" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkLoading]="isLoading">
-  <input type="text" nz-input placeholder="输入你的 GitHub 用户名" [(ngModel)]="username">
+  <input #userInput type="text" nz-input placeholder="输入你的 GitHub 用户名" [(ngModel)]="username" (keydown.enter)="handleOk()">
 </nz-modal>
