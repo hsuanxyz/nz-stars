@@ -346,22 +346,20 @@ export class ItemListComponent implements OnDestroy {
 **item-list.component.html**
 
 ```html
-<nz-spin [nzSpinning]="loading">
-  <nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
-    <ng-template #item let-item>
-      <nz-list-item>
-        <nz-list-item-meta
-          [nzTitle]="nzTitle"
-          [nzAvatar]="item.owner.avatar_url"
-          [nzDescription]="item.description">
-          <ng-template #nzTitle>
-            <a [href]="item.url">{{item.name}}</a>&nbsp;
-            <small><i class="anticon anticon-star"></i> {{item.stargazers_count}}</small>
-          </ng-template>
-        </nz-list-item-meta>
-      </nz-list-item>
-    </ng-template>
-  </nz-list>
+<nz-spin nzTip='Loading...' [nzSpinning]="loading">
+  <ul class="list">
+    <li class="item" *ngFor="let item of data">
+      <div class="title-wrap">
+        <nz-avatar class="avatar" nzIcon="anticon anticon-user" [nzSrc]="item.owner.avatar_url"></nz-avatar>
+        <h4 class="title">
+          <a>{{item.name}}</a> &nbsp;
+          <small><i class="anticon anticon-star"></i> {{item.stargazers_count}}</small>
+        </h4>
+        <!--tags-->
+      </div>
+      <p class="description">{{item.description}}</p>
+    </li>
+  </ul>
 </nz-spin>
 ```
 

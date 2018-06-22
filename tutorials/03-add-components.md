@@ -260,7 +260,7 @@ export class LabelsFilterComponent {
 在命令行输入一下命令，生成一个列表组件。
 
 ```base
-ng g ng-zorro-antd:list-basic -p app --styleext='less' --name=item-list
+ng g c item-list
 ```
 
 将组件放置 `layout` 组件预留的位置中。
@@ -271,6 +271,54 @@ ng g ng-zorro-antd:list-basic -p app --styleext='less' --name=item-list
   <app-item-list></app-item-list>
 </div>
 ...
+```
+
+然后编辑以下文件：
+
+**item-list.component.html**
+
+```html
+<ul class="list">
+  <li class="item">
+    <div class="title-wrap">
+      <nz-avatar class="avatar" nzIcon="anticon anticon-user" [nzSrc]=""></nz-avatar>
+      <h4 class="title"><a>ng-zorro-antd</a> &nbsp; <small><i class="anticon anticon-star"></i> 3147 </small></h4>
+      <!--tags-->
+    </div>
+    <p class="description">An enterprise-class UI components based on Ant Design and Angular. 🐜</p>
+  </li>
+</ul>
+```
+**item-list.component.less**
+
+```less
+ul.list {
+  list-style-type: none;
+  margin-top: 10px;
+  padding: 0;
+  min-height: 100px;
+
+  li.item {
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 15px;
+
+    .title-wrap {
+      display: flex;
+      align-items: center;
+      height: 36px;
+
+      h4 {
+        margin: 0 10px;
+      }
+    }
+
+    .description {
+      color: #949494;
+      margin: 8px 0;
+    }
+  }
+
+}
 ```
 
 之后我们会为下面列表添加动态增减标签的功能，不过那得等到我们成功从 API 获取数据之后了。

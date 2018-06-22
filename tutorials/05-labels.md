@@ -1,5 +1,13 @@
 # 标签管理
 
+## 增删标签
+
+这里我们要为每一个 item 添加一个增删标签的组件，在命令后输入以下命令:
+
+```base
+$ ng g ng-zorro-antd:tag-control -p app --styleext='less' --name=item-tags --path=src/app/components
+```
+
 本章我们会完成标签的增删查功能，因为 GitHub 没有自定义标签的功能，所以我需要编写一个服务储存与用户相关联的标签。
 
 ## 使用 localStorage

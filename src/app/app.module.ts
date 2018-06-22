@@ -14,6 +14,7 @@ import { UserPanelComponent } from './components/user-panel/user-panel.component
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { LabelsFilterComponent } from './components/labels-filter/labels-filter.component';
 import { ItemListComponent } from './components/item-list/item-list.component';
+import { ItemTagsComponent } from './components/item-tags/item-tags.component';
 
 registerLocaleData(zh);
 
@@ -24,7 +25,8 @@ registerLocaleData(zh);
     UserPanelComponent,
     SearchBarComponent,
     LabelsFilterComponent,
-    ItemListComponent
+    ItemListComponent,
+    ItemTagsComponent
   ],
   imports: [
     BrowserModule,
