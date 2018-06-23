@@ -140,15 +140,17 @@ $ ng g interface interfaces/repo-tags
 ```
 export interface RepoTags {
   repos: Repos;
-  tags: Tags;
+  tags: Tag[];
 }
 
 export interface Repos {
   [id: number]: string[];
 }
 
-export interface Tags {
-  [tag: string]: number[];
+export interface Tag {
+  name: string;
+  repos: number[];
+  count: number;
 }
 ```
 
@@ -169,6 +171,20 @@ import localForage from "localforage";
 localForage.config({
   name: 'nz-stars'
 });
+```
+
+接下来在命令行输入以下命令创建标签服务：
+
+
+```base
+ng g s services/tags
+```
+
+然后为其添加如下方法:
+
+**tags.service.ts**
+
+```ts
 ```
 
 本章我们会完成标签的增删查功能，因为 GitHub 没有自定义标签的功能，所以我需要编写一个服务储存与用户相关联的标签。

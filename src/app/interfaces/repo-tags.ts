@@ -1,12 +1,14 @@
 export interface RepoTags {
   repos: Repos;
-  tags: Tags;
+  tags: Tag[];
 }
 
 export interface Repos {
   [id: number]: string[];
 }
 
-export interface Tags {
-  [tag: string]: number[];
+export interface Tag {
+  name: string;
+  repos: number[];
+  count: number;
 }
