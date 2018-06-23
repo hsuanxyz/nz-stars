@@ -1,16 +1,16 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-item-tags',
   templateUrl: './item-tags.component.html',
   styleUrls: ['./item-tags.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemTagsComponent {
 
   tags = [];
   inputVisible = false;
   inputValue = '';
+  @Input() id: number;
   @ViewChild('inputElement') inputElement: ElementRef;
 
   handleClose(removedTag: {}): void {

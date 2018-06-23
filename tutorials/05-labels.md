@@ -1,18 +1,137 @@
 # 标签管理
 
-## Interface
-
-```base
-$ ng g interface interface/repo-tags
-```
-
-## 增删标签
+## 为每个库添加标签组件
 
 这里我们要为每一个 item 添加一个增删标签的组件，在命令后输入以下命令(注意: 这里使用 `--path` 参数指的了组件路径):
 
 ```base
 $ ng g ng-zorro-antd:tag-control -p app --styleext='less' --name=item-tags --path=src/app/components
 ```
+
+接下来修改组件，为其然增加一个 `id` 输入属性，用于控制这个 repo 的 tags。然后修改以下生成模板中的条件判断
+
+**item-tags.component.ts**
+
+```ts
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-item-tags',
+  templateUrl: './item-tags.component.html',
+  styleUrls: ['./item-tags.component.less'],
+})
+export class ItemTagsComponent {
+
+  tags = [];
+  inputVisible = false;
+  inputValue = '';
+  @Input() id: number;
+  @ViewChild('inputElement') inputElement: ElementRef;
+
+  handleClose(removedTag: {}): void {
+    this.tags = this.tags.filter(tag => tag !== removedTag);
+  }
+
+  sliceTagName(tag: string): string {
+    const isLongTag = tag.length > 20;
+    return isLongTag ? `${tag.slice(0, 20)}...` : tag;
+  }
+
+  showInput(): void {
+    this.inputVisible = true;
+    setTimeout(() => {
+      this.inputElement.nativeElement.focus();
+    }, 10);
+  }
+
+  handleInputConfirm(): void {
+    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1) {
+      this.tags.push(this.inputValue);
+    }
+    this.inputValue = '';
+    this.inputVisible = false;
+  }
+}
+```
+
+**item-tags.component.html**
+
+```html
+<nz-tag
+  *ngFor="let tag of tags"
+  [nzMode]="'closeable'"
+  (nzAfterClose)="handleClose(tag)">
+  {{ sliceTagName(tag) }}
+</nz-tag>
+<nz-tag
+  *ngIf="!inputVisible"
+  class="editable-tag"
+  (click)="showInput()">
+  <i class="anticon anticon-plus"></i> New Tag
+</nz-tag>
+<input
+  #inputElement
+  nz-input
+  nzSize="small"
+  *ngIf="inputVisible" type="text"
+  [(ngModel)]="inputValue"
+  style="width: 78px;"
+  (blur)="handleInputConfirm()"
+  (keydown.enter)="handleInputConfirm()">
+```
+
+调整样式
+
+**item-tags.component.less**
+
+```less
+.editable-tag ::ng-deep .ant-tag {
+  background: rgb(255, 255, 255);
+  border-style: dashed;
+}
+
+::ng-deep .ant-tag {
+  margin-bottom: 0;
+}
+```
+
+将其放入 `ItemListComponent` 组件的模板循环体中，然后将 `id` 属性传给标签组件。
+
+**item-list.component.html**
+
+```html
+<nz-spin nzTip='Loading...' [nzSpinning]="loading">
+  <ul class="list">
+    <li class="item" *ngFor="let item of data">
+      <div class="title-wrap">
+        <nz-avatar class="avatar" nzIcon="anticon anticon-user" [nzSrc]="item.owner.avatar_url"></nz-avatar>
+        <h4 class="title">
+          <a [href]="item.html_url" target="_blank">{{item.full_name}}</a> &nbsp;
+          <small><i class="anticon anticon-star"></i> {{item.stargazers_count}}</small>
+        </h4>
+        <app-item-tags [id]="item.id"></app-item-tags>
+      </div>
+      <p class="description">{{item.description}}</p>
+    </li>
+  </ul>
+</nz-spin>
+```
+
+不出意外的话，你的界面应该像下面这样。
+
+![item-tags](./screenshots/item-tags.png)
+
+你现在可以尝试点击 `New Tag` 按钮增加标签，当然，现在只实现了交互效果，并没有实质性的作用。
+
+接下来我们会编写标签服务来控制标签的增删查，最后会在添加通过标签筛选的功能。
+
+## Interface
+
+```base
+$ ng g interface interface/repo-tags
+```
+
+
 
 本章我们会完成标签的增删查功能，因为 GitHub 没有自定义标签的功能，所以我需要编写一个服务储存与用户相关联的标签。
 
