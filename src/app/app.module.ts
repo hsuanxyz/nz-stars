@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import localForage from "localforage";
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,6 +19,9 @@ import { ItemListComponent } from './components/item-list/item-list.component';
 import { ItemTagsComponent } from './components/item-tags/item-tags.component';
 
 registerLocaleData(zh);
+localForage.config({
+  name: 'nz-stars'
+});
 
 @NgModule({
   declarations: [

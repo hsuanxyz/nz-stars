@@ -135,7 +135,41 @@ export class ItemTagsComponent {
 $ ng g interface interfaces/repo-tags
 ```
 
+**repo-tags.ts**
 
+```
+export interface RepoTags {
+  repos: Repos;
+  tags: Tags;
+}
+
+export interface Repos {
+  [id: number]: string[];
+}
+
+export interface Tags {
+  [tag: string]: number[];
+}
+```
+
+这里的 `repos` 属性和 `tags` 属性其实是互相映射的关系。这里我们是在用空间换时间，因为在数据量很大的时候，特别是在 Angular 模板的循环体中反查对应数据是消耗性能的。没明白的同学等我们做完之后再慢慢体会。
+
+### 创建标签管理服务
+
+这里我们会使用 [localForage](https://github.com/localForage/localForage) 来操作本地存储，它会自动的根据浏览器支持选择 `IndexedDB` > `WebSQL` > `localStorage` 作为存储方案。这里我们是希望通过 `IndexedDB` 的异步存取来改善性能，而使用 `localForage` 时，它的用法几乎与使用 `localStorage` 一样。
+
+在命令输入 `npm install localforage` 安装，然后在 `app.module.ts` 中调用 `localforage.config` 方法配置存储前缀，这是有效避免命名冲突的最佳实践。
+
+**app.module.ts**
+
+```ts
+...
+import localForage from "localforage";
+
+localForage.config({
+  name: 'nz-stars'
+});
+```
 
 本章我们会完成标签的增删查功能，因为 GitHub 没有自定义标签的功能，所以我需要编写一个服务储存与用户相关联的标签。
 
