@@ -1,5 +1,11 @@
 # 标签管理
 
+## Interface
+
+```base
+$ ng g interface interface/repo-tags
+```
+
 ## 增删标签
 
 这里我们要为每一个 item 添加一个增删标签的组件，在命令后输入以下命令(注意: 这里使用 `--path` 参数指的了组件路径):
