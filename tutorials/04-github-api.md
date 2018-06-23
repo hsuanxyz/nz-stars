@@ -438,7 +438,242 @@ export class GithubService {
 
 ![get-starred](./screenshots/get-starred.gif)
 
+## Interface
 
+对 Angular 设计思想了解的同学应该会发现我们之前其实漏掉了一个重要的东西，就是为接口声明 Interface。这是算是 TypeScript 的强大特性之一，特别是在 IDE 的支持下，在 ts 与 模板中有能提供类型支持。
 
+在一个使用 TypeScript 的项目中，特别是在 Angular 项目中，Interface 的覆盖率是项目健壮度的重要指标。无论是在接口对接、项目维护以及多人合作中它都发挥这重要的重用。
+
+这里给大家推荐一个工具 [MakeTypes](https://jvilk.com/MakeTypes/)，它能将 `json` 转化成 TypeScript 的 Interface。
+
+接下来在命令行输入以下命令生成 Interface 文件，然后复制以及内容到文件中。
+
+```base
+$ ng g interface interface/github
+```
+
+**github.ts**
+
+```ts
+export interface GithubUser {
+  login: string;
+  id: number;
+  node_id: string;
+  avatar_url: string;
+  gravatar_id: string;
+  url: string;
+  html_url: string;
+  followers_url: string;
+  following_url: string;
+  gists_url: string;
+  starred_url: string;
+  subscriptions_url: string;
+  organizations_url: string;
+  repos_url: string;
+  events_url: string;
+  received_events_url: string;
+  type: string;
+  site_admin: boolean;
+  name: string;
+  company: string;
+  blog: string;
+  location: string;
+  email: string;
+  hireable: boolean;
+  bio: string;
+  public_repos: number;
+  public_gists: number;
+  followers: number;
+  following: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GithubRepo {
+  id: number;
+  node_id: string;
+  name: string;
+  full_name: string;
+  owner: GithubRepoOwner;
+  private: boolean;
+  html_url: string;
+  description: string;
+  fork: boolean;
+  url: string;
+  forks_url: string;
+  keys_url: string;
+  collaborators_url: string;
+  teams_url: string;
+  hooks_url: string;
+  issue_events_url: string;
+  events_url: string;
+  assignees_url: string;
+  branches_url: string;
+  tags_url: string;
+  blobs_url: string;
+  git_tags_url: string;
+  git_refs_url: string;
+  trees_url: string;
+  statuses_url: string;
+  languages_url: string;
+  stargazers_url: string;
+  contributors_url: string;
+  subscribers_url: string;
+  subscription_url: string;
+  commits_url: string;
+  git_commits_url: string;
+  comments_url: string;
+  issue_comment_url: string;
+  contents_url: string;
+  compare_url: string;
+  merges_url: string;
+  archive_url: string;
+  downloads_url: string;
+  issues_url: string;
+  pulls_url: string;
+  milestones_url: string;
+  notifications_url: string;
+  labels_url: string;
+  releases_url: string;
+  deployments_url: string;
+  created_at: string;
+  updated_at: string;
+  pushed_at: string;
+  git_url: string;
+  ssh_url: string;
+  clone_url: string;
+  svn_url: string;
+  homepage: string;
+  size: number;
+  stargazers_count: number;
+  watchers_count: number;
+  language: string;
+  has_issues: boolean;
+  has_projects: boolean;
+  has_downloads: boolean;
+  has_wiki: boolean;
+  has_pages: boolean;
+  forks_count: number;
+  mirror_url: string;
+  archived: boolean;
+  open_issues_count: number;
+  license: GithubRepoLicense;
+  forks: number;
+  open_issues: number;
+  watchers: number;
+  default_branch: string;
+}
+export interface GithubRepoOwner {
+  login: string;
+  id: number;
+  node_id: string;
+  avatar_url: string;
+  gravatar_id: string;
+  url: string;
+  html_url: string;
+  followers_url: string;
+  following_url: string;
+  gists_url: string;
+  starred_url: string;
+  subscriptions_url: string;
+  organizations_url: string;
+  repos_url: string;
+  events_url: string;
+  received_events_url: string;
+  type: string;
+  site_admin: boolean;
+}
+export interface GithubRepoLicense {
+  key: string;
+  name: string;
+  spdx_id: string;
+  url: string;
+  node_id: string;
+}
+```
+
+然后修改下面的文件，应用我们的 Interface。
+
+**github.service.ts**
+
+```ts
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+
+import * as parse from 'parse-link-header';
+
+import { AuthService } from './auth.service';
+
+import { from, of } from 'rxjs';
+import { concatAll, mergeMap, reduce } from 'rxjs/operators';
+import { GithubRepo, GithubUser } from '../interface/github';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GithubService {
+
+  API_URL = 'https://api.github.com';
+
+  constructor(private http: HttpClient, private authService: AuthService) {
+  }
+
+  getUserInfo(username) {
+    return this.http.get<GithubUser>(`${this.API_URL}/users/${username}`);
+  }
+
+  getStarred(index: number = 1) {
+    return this.http.get<GithubRepo[]>(
+      `${this.API_URL}/users/${this.authService.username}/starred?per_page=100&page=${index}`,
+      { observe: 'response' }
+    ).pipe(
+      mergeMap((res: HttpResponse<GithubRepo[]>) => {
+        const link = parse(res.headers.get('Link'));
+        if (index === 1 && link && link.next && link.last) {
+          const page = parseInt(link.last.page, 10);
+          const observables = [];
+          for (let i = 1; i < page; i++) {
+            observables.push(this.getStarred(i + 1));
+          }
+          return from([of(res.body), ...observables]).pipe(concatAll());
+        } else {
+          return from(of(res.body));
+        }
+      }),
+      reduce((total: GithubRepo[], current: GithubRepo[]): GithubRepo[] => [...total, ...current])
+    );
+  }
+}
+```
+
+**user-panel.component.ts**
+
+```ts
+...
+import { GithubUser } from '../../interface/github';
+
+@Component(...)
+export class UserPanelComponent implements OnInit {
+  
+  user: GithubUser;
+  ...
+}
+```
+
+**item-list.component.ts**
+
+```ts
+import { GithubRepo } from '../../interface/github';
+
+@Component(...)
+export class ItemListComponent implements OnDestroy {
+  data: GithubRepo[] = [];
+  ...
+}
+```
+
+## 总结
+
+TODO
 
 

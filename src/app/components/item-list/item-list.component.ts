@@ -2,6 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { GithubService } from '../../services/github.service';
 import { Subscription } from 'rxjs';
+import { GithubRepo } from '../../interface/github';
 
 @Component({
   selector: 'app-item-list',
@@ -9,7 +10,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./item-list.component.less']
 })
 export class ItemListComponent implements OnDestroy {
-  data = [];
+  data: GithubRepo[] = [];
   loading = false;
 
   addUserSubscription: Subscription;

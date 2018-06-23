@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { GithubService } from '../../services/github.service';
 import { AuthService } from '../../services/auth.service';
+import { GithubUser } from '../../interface/github';
 
 @Component({
   selector   : 'app-user-panel',
@@ -11,7 +12,7 @@ export class UserPanelComponent implements OnInit {
 
   isVisible = false;
   isLoading = false;
-  user: any;
+  user: GithubUser;
   username: string;
 
   @ViewChild('userInput') userInput: ElementRef<HTMLInputElement>;

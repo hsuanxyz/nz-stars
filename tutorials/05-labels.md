@@ -127,6 +127,12 @@ export class ItemTagsComponent {
 
 ## Interface
 
+到这一步我们以及完成了页面上所有的 UI 组件，接下来的工作是为它们编写业务逻辑。
+
+对 Angular 设计实现了解的同学应该会发现我们之前其实漏掉了一个重要的东西，就是声明 Interface。这是算是 TypeScript 的强大特性之一，特别是在 IDE 的支持下，在 ts 与 模板中有能提供类型支持。
+
+在一个使用 TypeScript 的项目中，特别是在 Angular 项目中，Interface 的覆盖率是项目健壮度的重要指标。无论是在接口对接、项目维护以及多人合作中它都发挥这重要的重用
+
 ```base
 $ ng g interface interface/repo-tags
 ```

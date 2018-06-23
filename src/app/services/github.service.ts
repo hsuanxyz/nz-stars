@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 
 import { from, of } from 'rxjs';
 import { concatAll, mergeMap, reduce } from 'rxjs/operators';
+import { GithubRepo, GithubUser } from '../interface/github';
 
 @Injectable({
   providedIn: 'root'
@@ -19,15 +20,15 @@ export class GithubService {
   }
 
   getUserInfo(username) {
-    return this.http.get<any>(`${this.API_URL}/users/${username}`);
+    return this.http.get<GithubUser>(`${this.API_URL}/users/${username}`);
   }
 
   getStarred(index: number = 1) {
-    return this.http.get<any[]>(
+    return this.http.get<GithubRepo[]>(
       `${this.API_URL}/users/${this.authService.username}/starred?per_page=100&page=${index}`,
       { observe: 'response' }
     ).pipe(
-      mergeMap((res: HttpResponse<any>) => {
+      mergeMap((res: HttpResponse<GithubRepo[]>) => {
         const link = parse(res.headers.get('Link'));
         if (index === 1 && link && link.next && link.last) {
           const page = parseInt(link.last.page, 10);
@@ -40,7 +41,7 @@ export class GithubService {
           return from(of(res.body));
         }
       }),
-      reduce((total: any[], current: any[]): any[] => [...total, ...current])
+      reduce((total: GithubRepo[], current: GithubRepo[]): GithubRepo[] => [...total, ...current])
     );
   }
 }
