@@ -59,7 +59,7 @@ export class TagsService {
 
       if (tagIndex !== -1) {
         newTags.tags[tagIndex].repos.push(repoId);
-        newTags.tags[tagIndex].count++;
+        newTags.tags[tagIndex].count = newTags.tags[tagIndex].repos.length;
       } else {
         newTags.tags.push({
           name: tag,
@@ -92,19 +92,21 @@ export class TagsService {
       if (tagIndex !== -1) {
         const repoIndexInTag = newTags.tags[tagIndex].repos.indexOf(repoId);
         const count = newTags.tags[tagIndex].count;
-        newTags.tags[tagIndex].repos.splice(repoIndexInTag, repoIndexInTag !== -1 ? 1 : 0);
-        newTags.tags[tagIndex].count = repoIndexInTag !== -1 ? count - 1 : count;
-      } else {
-        newTags.tags.push({
-          name: tag,
-          repos: [],
-          count: 0
-        })
+
+        if (newTags.tags.length === 1 && repoIndexInTag !== -1) {
+          // 如果这是唯一一个 tag 则直接移除它。
+          newTags.tags.splice(repoIndexInTag, 1);
+        } else if (repoIndexInTag !== -1) {
+          newTags.tags[tagIndex].repos.splice(repoIndexInTag, 1);
+          newTags.tags[tagIndex].count = newTags.tags[tagIndex].repos.length;
+        }
       }
+
       this.tagsCache = {
         tags: newTags,
         username
       };
+
       this.tagChange.next(newTags);
       return localForage.setItem(`{${username}/tags`, newTags);
     })

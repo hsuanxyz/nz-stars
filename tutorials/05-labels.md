@@ -246,7 +246,7 @@ export class TagsService {
 
       if (tagIndex !== -1) {
         newTags.tags[tagIndex].repos.push(repoId);
-        newTags.tags[tagIndex].count++;
+        newTags.tags[tagIndex].count = newTags.tags[tagIndex].repos.length;
       } else {
         newTags.tags.push({
           name: tag,
@@ -279,19 +279,21 @@ export class TagsService {
       if (tagIndex !== -1) {
         const repoIndexInTag = newTags.tags[tagIndex].repos.indexOf(repoId);
         const count = newTags.tags[tagIndex].count;
-        newTags.tags[tagIndex].repos.splice(repoIndexInTag, repoIndexInTag !== -1 ? 1 : 0);
-        newTags.tags[tagIndex].count = repoIndexInTag !== -1 ? count - 1 : count;
-      } else {
-        newTags.tags.push({
-          name: tag,
-          repos: [],
-          count: 0
-        })
+
+        if (newTags.tags.length === 1 && repoIndexInTag !== -1) {
+          // 如果这是唯一一个 tag 则直接移除它。
+          newTags.tags.splice(repoIndexInTag, 1);
+        } else if (repoIndexInTag !== -1) {
+          newTags.tags[tagIndex].repos.splice(repoIndexInTag, 1);
+          newTags.tags[tagIndex].count = newTags.tags[tagIndex].repos.length;
+        }
       }
+
       this.tagsCache = {
         tags: newTags,
         username
       };
+      
       this.tagChange.next(newTags);
       return localForage.setItem(`{${username}/tags`, newTags);
     })
@@ -305,64 +307,6 @@ export class TagsService {
 * 使用了当前用户作为存储 key 的前缀，用于区分不同用户的自定义标签；
 * 在第一次获取，以及发生改动后都对数据进行了内存缓存，这比每次读取本地存储快得多。
 * 每次发生改动后调用了 `tagChange` 进行广播，方便相关组件刷新数据。
-
-## 使用 localStorage
-
-这里我们使用 [localStorage](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/localStorage) 在本地存取用户标签。
-
-在命令行输入以下命令创建一个 `LabelService` 服务:
-
-```base
-ng g s services/label
-```
-
-编辑 `LabelService`，添加一个 `prefix` 属性用于指定 `localStorage` key 的前缀，这是避免命名冲突的最佳实践；然后注入 `AuthService` 服务，用于获取当前用户名，以区分不同用户的标签。
-
-**label.service.ts**
-
-```ts
-import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class LabelService {
-
-  prefix = 'ng-stars';
-  
-  constructor(private authService: AuthService) { }
-}
-```
-
-然后添加 `setLabels` 与 `getLabels` 方法，以用户名作为作用域存取标签。
-
-**label.service.ts**
-
-```ts
-import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class LabelService {
-
-  prefix = 'ng-stars';
-
-  constructor(private authService: AuthService) { }
-
-  setLabels(labels: string[]) {
-    const username = this.authService.username;
-    localStorage.setItem(`${this.prefix}-${username}/labels`, JSON.stringify(labels));
-  }
-
-  getLabels(): string[] | null {
-    const username = this.authService.username;
-    return JSON.parse(localStorage.getItem(`${this.prefix}-${username}/labels`));
-  }
-}
-```
 
 ## 添加标签
 
