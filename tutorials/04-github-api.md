@@ -449,7 +449,7 @@ export class GithubService {
 接下来在命令行输入以下命令生成 Interface 文件，然后复制以及内容到文件中。
 
 ```base
-$ ng g interface interface/github
+$ ng g interface interfaces/github
 ```
 
 **github.ts**

@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { GithubService } from '../../services/github.service';
 import { AuthService } from '../../services/auth.service';
-import { GithubUser } from '../../interface/github';
+import { GithubUser } from '../../interfaces/github';
 
 @Component({
   selector   : 'app-user-panel',

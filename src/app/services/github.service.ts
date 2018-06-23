@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
 
 import { from, of } from 'rxjs';
 import { concatAll, mergeMap, reduce } from 'rxjs/operators';
-import { GithubRepo, GithubUser } from '../interface/github';
+import { GithubRepo, GithubUser } from '../interfaces/github';
 
 @Injectable({
   providedIn: 'root'

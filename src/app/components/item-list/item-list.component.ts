@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { GithubService } from '../../services/github.service';
 import { Subscription } from 'rxjs';
-import { GithubRepo } from '../../interface/github';
+import { GithubRepo } from '../../interfaces/github';
 
 @Component({
   selector: 'app-item-list',
