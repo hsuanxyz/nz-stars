@@ -167,7 +167,7 @@ export class SearchBarComponent {
 在命令行输入一下命令，生成一个可选标签组件：
 
 ```base
-ng g ng-zorro-antd:tag-hot-tags -p app --styleext='less' --name=labels-filter
+ng g ng-zorro-antd:tag-hot-tags -p app --styleext='less' --name=tags-filter
 ```
 
 将生成的组件放在侧边栏的位置
@@ -177,7 +177,7 @@ ng g ng-zorro-antd:tag-hot-tags -p app --styleext='less' --name=labels-filter
 ```html
 <nz-sider [nzWidth]="350" class="side">
   <div class="tags-wrap">
-    <app-labels-filter></app-labels-filter>
+    <app-tags-filter></app-tags-filter>
   </div>
 </nz-sider>
 ```
@@ -187,7 +187,7 @@ ng g ng-zorro-antd:tag-hot-tags -p app --styleext='less' --name=labels-filter
 
 `nz-card` 是一个卡片容器组件，允许我们设置标题、操作按钮以及内容。
 
-**labels-filter.component.html**
+**tags-filter.component.html**
 
 ```html
 <nz-card [nzBordered]="false" nzTitle="选择标签">
@@ -200,13 +200,13 @@ ng g ng-zorro-antd:tag-hot-tags -p app --styleext='less' --name=labels-filter
 
 现在刷新你的页面，你会看到下面的样子
 
-![labels](./screenshots/2-3-labels.png)
+![tags](./screenshots/2-3-tags.png)
 
 现在试着修改一下 `ts` 文件里的 `tagsFromServer` 变量，为他多增减几个标签。你会发现样式显得有些拥挤。
 
 现在修改我们组件的样式文件。由于 NG-ZORRO 组件视图封装模式使用的是模拟 `Shadow DOM` 来保证各组件样式不会互相影响。因此使用 `::ng-deep` 来达到穿透组件的效果来修改组件内部样式。感兴趣的同学可以参考 [Angular 文档(组件样式)](https://angular.cn/guide/component-styles#deprecated-codedeepcode-codecode-and-codeng-deepcode)。
 
-**labels-filter.component.less**
+**tags-filter.component.less**
 
 ```less
 ::ng-deep .ant-tag {
@@ -214,23 +214,23 @@ ng g ng-zorro-antd:tag-hot-tags -p app --styleext='less' --name=labels-filter
 }
 ```
 
-接下来为我们的组件添加一个 `labels` 输入属性作为要显示的标签，一个 `select` 输出属性向外传递选择事件。修改下面的文件。
+接下来为我们的组件添加一个 `tags` 输入属性作为要显示的标签，一个 `select` 输出属性向外传递选择事件。修改下面的文件。
 
-**labels-filter.component.ts**
+**tags-filter.component.ts**
 
 ```ts
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-labels-filter',
-  templateUrl: './labels-filter.component.html',
-  styleUrls: ['./labels-filter.component.less']
+  selector: 'app-tags-filter',
+  templateUrl: './tags-filter.component.html',
+  styleUrls: ['./tags-filter.component.less']
 })
-export class LabelsFilterComponent {
+export class tagsFilterComponent {
 
   selectedTags = [];
 
-  @Input() labels: string[] = [];
+  @Input() tags: string[] = [];
   @Output() select = new EventEmitter<string[]>();
 
   handleChange(checked: boolean, tag: string): void {
@@ -244,11 +244,11 @@ export class LabelsFilterComponent {
 }
 ```
 
-**labels-filter.component.html**
+**tags-filter.component.html**
 
 ```html
 <nz-card [nzBordered]="false" nzTitle="选择标签">
-  <nz-tag *ngFor="let tag of labels" nzMode="checkable"
+  <nz-tag *ngFor="let tag of tags" nzMode="checkable"
           [nzChecked]="selectedTags.indexOf(tag) > -1" (nzCheckedChange)="handleChange($event, tag)">
     {{ tag }}
   </nz-tag>

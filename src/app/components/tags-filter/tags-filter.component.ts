@@ -1,15 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-labels-filter',
-  templateUrl: './labels-filter.component.html',
-  styleUrls: ['./labels-filter.component.less']
+  selector: 'app-tags-filter',
+  templateUrl: './tags-filter.component.html',
+  styleUrls: ['./tags-filter.component.less']
 })
-export class LabelsFilterComponent {
+export class TagsFilterComponent {
 
   selectedTags: string[] = [];
 
-  @Input() labels: string[] = [];
+  @Input() tags: string[] = [];
   @Output() select = new EventEmitter<string[]>();
 
   handleChange(checked: boolean, tag: string): void {

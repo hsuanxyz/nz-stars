@@ -12,7 +12,7 @@
 src
 ├── components
 │   ├── item-list
-│   ├── labels-filter
+│   ├── tags-filter
 │   ├── layout
 │   ├── search-bar
 │   └── user-panel
@@ -533,7 +533,7 @@ export interface GithubRepo {
   pulls_url: string;
   milestones_url: string;
   notifications_url: string;
-  labels_url: string;
+  tags_url: string;
   releases_url: string;
   deployments_url: string;
   created_at: string;

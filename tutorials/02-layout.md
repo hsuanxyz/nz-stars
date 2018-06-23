@@ -47,7 +47,7 @@ ng g ng-zorro-antd:layout-top-side-2 -p app --styleext='less' --name=layout
   </nz-header>
   <nz-layout class="main">
     <nz-sider [nzWidth]="350" class="side">
-      <div class="labels-wrap">
+      <div class="tags-wrap">
         <!--TODO 标签筛选-->
       </div>
     </nz-sider>
@@ -110,7 +110,7 @@ ng g ng-zorro-antd:layout-top-side-2 -p app --styleext='less' --name=layout
     background: #fff;
     border-right: 1px solid #e9e9e9;
 
-    .labels-wrap {
+    .tags-wrap {
       margin: 10px;
     }
   }

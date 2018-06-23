@@ -14,7 +14,7 @@ import zh from '@angular/common/locales/zh';
 import { LayoutComponent } from './components/layout/layout.component';
 import { UserPanelComponent } from './components/user-panel/user-panel.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
-import { LabelsFilterComponent } from './components/labels-filter/labels-filter.component';
+import { TagsFilterComponent } from './components/tags-filter/tags-filter.component';
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { ItemTagsComponent } from './components/item-tags/item-tags.component';
 
@@ -29,7 +29,7 @@ localForage.config({
     LayoutComponent,
     UserPanelComponent,
     SearchBarComponent,
-    LabelsFilterComponent,
+    TagsFilterComponent,
     ItemListComponent,
     ItemTagsComponent
   ],
