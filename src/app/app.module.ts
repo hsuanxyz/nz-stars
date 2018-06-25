@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import localForage from "localforage";
+import * as localForage from 'localforage';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';

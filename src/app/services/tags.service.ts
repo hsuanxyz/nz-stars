@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import localForage from "localforage";
+import * as localForage from 'localforage';
 
 import { AuthService } from './auth.service';
-import { RepoTags } from "../interfaces/repo-tags";
+import { RepoTags } from '../interfaces/repo-tags';
 
 import { Subject } from 'rxjs/internal/Subject';
 
@@ -20,7 +20,7 @@ export class TagsService {
   tagChange = new Subject<RepoTags>();
 
   get hasCache(): boolean {
-    return this.tagsCache && this.tagsCache.username === this.authService.username
+    return this.tagsCache && this.tagsCache.username === this.authService.username;
   }
 
   constructor(private authService: AuthService) {
@@ -42,7 +42,7 @@ export class TagsService {
         username
       };
       return Promise.resolve(tags);
-    })
+    });
   }
 
   addTag(tag: string, repoId: number) {
@@ -65,7 +65,7 @@ export class TagsService {
           name: tag,
           repos: [repoId],
           count: 1
-        })
+        });
       }
       this.tagsCache = {
         tags: newTags,
@@ -73,7 +73,7 @@ export class TagsService {
       };
       this.tagChange.next(newTags);
       return localForage.setItem(`{${username}/tags`, newTags);
-    })
+    });
   }
 
   removeTag(tag: string, repoId: number) {
@@ -109,7 +109,7 @@ export class TagsService {
 
       this.tagChange.next(newTags);
       return localForage.setItem(`{${username}/tags`, newTags);
-    })
+    });
   }
 
 }
