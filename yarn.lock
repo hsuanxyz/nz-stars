@@ -4012,9 +4012,9 @@ next-tick@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
 
-ng-zorro-antd@^1.0.0-rc.0:
-  version "1.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/ng-zorro-antd/-/ng-zorro-antd-1.0.0-rc.0.tgz#e81cb6e09eace5b0a1be854734db84dbb28ebf83"
+ng-zorro-antd@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ng-zorro-antd/-/ng-zorro-antd-1.0.0.tgz#7d8d5ed37c3c81736cf49ee041001bcaa5c7b83e"
   dependencies:
     "@angular/cdk" "^6.0.0"
     date-fns "^1.29.0"

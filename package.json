@@ -22,7 +22,7 @@
     "@angular/router": "^6.0.3",
     "core-js": "^2.5.4",
     "localforage": "^1.7.2",
-    "ng-zorro-antd": "^1.0.0-rc.0",
+    "ng-zorro-antd": "^1.0.0",
     "parse-link-header": "^1.0.1",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"
