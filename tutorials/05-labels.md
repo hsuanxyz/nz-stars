@@ -308,24 +308,72 @@ export class TagsService {
 * 在第一次获取，以及发生改动后都对数据进行了内存缓存，这比每次读取本地存储快得多。
 * 每次发生改动后调用了 `tagChange` 进行广播，方便相关组件刷新数据。
 
-## 添加标签
+## 绑定标签
 
-### 使用可编辑标签组件
+修改 `ItemTagsComponent` 组件，将 `tags` 属性作为输入属性。
+同时将组件的 `changeDetection` 设置为 `ChangeDetectionStrategy.OnPush` 以此提高性能。最后在 `handleInputConfirm` 和 `handleClose` 方法中调用 `TagsService` 的对于方法。
 
-TODO 为列表 item 添加一个带添加移除的标签组件
+**item-tags.component.ts**
 
-### 修改储存数据结构
+```ts
+import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { TagsService } from '../../services/tags.service';
 
-TODO 使用标签作为 key, 对应的 repo 数组作为 value
+@Component({
+  selector       : 'app-item-tags',
+  templateUrl    : './item-tags.component.html',
+  styleUrls      : [ './item-tags.component.less' ],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class ItemTagsComponent {
 
-### 显示标签
+  inputVisible = false;
+  inputValue = '';
+  @Input() id: number;
+  @Input() tags: string[] = [];
 
-TODO 在左侧显示当前用户标签
+  @ViewChild('inputElement') inputElement: ElementRef;
 
-## 移除标签
+  constructor(private tagsService: TagsService) {
 
-TODO 在列表 item 上移除标签，当标签对应 repo length 为 0 时移除次标签
+  }
 
-## 通过标签筛选
+  handleClose(removedTag: string): void {
+    this.tagsService.removeTag(removedTag, this.id)
+    .then(() => {
+      this.tags = this.tags.filter(tag => tag !== removedTag);
+    });
+  }
 
-TODO 是通过管道吗？还是缓存完整列表通过服务完成？
+  sliceTagName(tag: string): string {
+    const isLongTag = tag.length > 20;
+    return isLongTag ? `${tag.slice(0, 20)}...` : tag;
+  }
+
+  showInput(): void {
+    this.inputVisible = true;
+    setTimeout(() => {
+      this.inputElement.nativeElement.focus();
+    }, 10);
+  }
+
+  handleInputConfirm(): void {
+    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1) {
+      this.tagsService.addTag(this.inputValue, this.id)
+      .then(() => {
+        this.tags.push(this.inputValue);
+      });
+    }
+    this.inputValue = '';
+    this.inputVisible = false;
+  }
+}
+```
+
+然后修改 `ItemListComponent` 组件的 `getStarredRepo` 方法，在获取数据后调用数组 `map` 方法，将对于标签添加到数据中，同时修改 `data` 属性的类型，为其添加 `tags` 属性。
+
+**item-list.component.ts**
+
+```ts
+```
+

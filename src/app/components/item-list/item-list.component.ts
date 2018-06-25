@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { GithubService } from '../../services/github.service';
 import { Subscription } from 'rxjs';
 import { GithubRepo } from '../../interfaces/github';
+import { TagsService } from '../../services/tags.service'
 
 @Component({
   selector: 'app-item-list',
@@ -10,21 +11,29 @@ import { GithubRepo } from '../../interfaces/github';
   styleUrls: ['./item-list.component.less']
 })
 export class ItemListComponent implements OnDestroy {
-  data: GithubRepo[] = [];
+  data: (GithubRepo & { tags: string[] })[] = [];
   loading = false;
 
   addUserSubscription: Subscription;
 
-  constructor(private authService: AuthService, private githubService: GithubService) {
+  constructor(private authService: AuthService, private githubService: GithubService, private tagsService: TagsService) {
     this.addUserSubscription = this.authService.addUser.subscribe(() => this.getStarredRepo());
   }
 
   getStarredRepo() {
     this.loading = true;
-    this.githubService.getStarred()
-    .subscribe(res => {
-      this.data = res;
-      this.loading = false;
+    this.tagsService.getTags()
+    .then(tags => {
+      this.githubService.getStarred()
+      .subscribe(res => {
+        this.data = res.map(repo => {
+          return {
+            ...repo,
+            tags: tags.repos[repo.id] || []
+          };
+        });
+        this.loading = false;
+      });
     });
   }
 

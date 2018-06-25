@@ -13,7 +13,7 @@ import { Subject } from 'rxjs/internal/Subject';
 export class TagsService {
 
   tagsCache: {
-    tags: RepoTags,
+    repoTags: RepoTags,
     username: string
   };
 
@@ -32,83 +32,83 @@ export class TagsService {
 
     // 如果有缓存则使用缓存
     if (this.hasCache) {
-      return Promise.resolve(this.tagsCache.tags);
+      return Promise.resolve(this.tagsCache.repoTags);
     }
 
-    return localForage.getItem(`{${username}/tags`)
-    .then((tags: RepoTags) => {
+    return localForage.getItem(`${username}/tags`)
+    .then((repoTags: RepoTags) => {
       this.tagsCache = {
-        tags,
+        repoTags: repoTags ? repoTags : { repos: {}, tags: [] },
         username
       };
-      return Promise.resolve(tags);
+      return Promise.resolve(this.tagsCache.repoTags);
     });
   }
 
   addTag(tag: string, repoId: number) {
     const username = this.authService.username;
-    return this.getTags().then(tags => {
-      const newTags: RepoTags = tags ? tags : { repos: {}, tags: [] };
-      const tagIndex = newTags.tags.findIndex(item => item.name === tag);
+    return this.getTags().then(repoTags => {
+      const newRepoTags: RepoTags = repoTags ? repoTags : { repos: {}, tags: [] };
+      const tagIndex = newRepoTags.tags.findIndex(item => item.name === tag);
 
-      if (newTags.repos[repoId]) {
-        newTags.repos[repoId].push(tag);
+      if (newRepoTags.repos[repoId]) {
+        newRepoTags.repos[repoId].push(tag);
       } else {
-        newTags.repos[repoId] = [tag];
+        newRepoTags.repos[repoId] = [tag];
       }
 
       if (tagIndex !== -1) {
-        newTags.tags[tagIndex].repos.push(repoId);
-        newTags.tags[tagIndex].count = newTags.tags[tagIndex].repos.length;
+        newRepoTags.tags[tagIndex].repos.push(repoId);
+        newRepoTags.tags[tagIndex].count = newRepoTags.tags[tagIndex].repos.length;
       } else {
-        newTags.tags.push({
+        newRepoTags.tags.push({
           name: tag,
           repos: [repoId],
           count: 1
         });
       }
       this.tagsCache = {
-        tags: newTags,
+        repoTags: newRepoTags,
         username
       };
-      this.tagChange.next(newTags);
-      return localForage.setItem(`{${username}/tags`, newTags);
+      this.tagChange.next(newRepoTags);
+      return localForage.setItem(`${username}/tags`, newRepoTags);
     });
   }
 
   removeTag(tag: string, repoId: number) {
     const username = this.authService.username;
-    return this.getTags().then(tags => {
-      const newTags: RepoTags = tags ? tags : { repos: {}, tags: [] };
-      const tagIndex = newTags.tags.findIndex(item => item.name === tag);
+    return this.getTags().then(repoTags => {
+      const newRepoTags: RepoTags = repoTags ? repoTags : { repos: {}, tags: [] };
+      const tagIndex = newRepoTags.tags.findIndex(item => item.name === tag);
 
-      if (newTags.repos[repoId]) {
-        const tagIndexInRepo = newTags.repos[repoId].indexOf(tag);
-        newTags.repos[repoId].splice(tagIndexInRepo, tagIndexInRepo !== -1 ? 1 : 0);
+      if (newRepoTags.repos[repoId]) {
+        const tagIndexInRepo = newRepoTags.repos[repoId].indexOf(tag);
+        newRepoTags.repos[repoId].splice(tagIndexInRepo, tagIndexInRepo !== -1 ? 1 : 0);
       } else {
-        newTags.repos[repoId] = [];
+        newRepoTags.repos[repoId] = [];
       }
 
       if (tagIndex !== -1) {
-        const repoIndexInTag = newTags.tags[tagIndex].repos.indexOf(repoId);
-        const count = newTags.tags[tagIndex].count;
+        const repoIndexInTag = newRepoTags.tags[tagIndex].repos.indexOf(repoId);
 
-        if (newTags.tags.length === 1 && repoIndexInTag !== -1) {
-          // 如果这是唯一一个 tag 则直接移除它。
-          newTags.tags.splice(repoIndexInTag, 1);
-        } else if (repoIndexInTag !== -1) {
-          newTags.tags[tagIndex].repos.splice(repoIndexInTag, 1);
-          newTags.tags[tagIndex].count = newTags.tags[tagIndex].repos.length;
+        if (repoIndexInTag !== -1) {
+          newRepoTags.tags[tagIndex].repos.splice(repoIndexInTag, 1);
+          newRepoTags.tags[tagIndex].count = newRepoTags.tags[tagIndex].repos.length;
+        }
+
+        if (repoIndexInTag !== -1 && newRepoTags.tags[tagIndex].count === 0) {
+          newRepoTags.tags.splice(tagIndex, 1);
         }
       }
 
       this.tagsCache = {
-        tags: newTags,
+        repoTags: newRepoTags,
         username
       };
 
-      this.tagChange.next(newTags);
-      return localForage.setItem(`{${username}/tags`, newTags);
+      this.tagChange.next(newRepoTags);
+      return localForage.setItem(`${username}/tags`, newRepoTags);
     });
   }
 

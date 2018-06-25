@@ -1,20 +1,37 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { TagsService } from '../../services/tags.service';
 
 @Component({
-  selector: 'app-item-tags',
-  templateUrl: './item-tags.component.html',
-  styleUrls: ['./item-tags.component.less'],
+  selector       : 'app-item-tags',
+  templateUrl    : './item-tags.component.html',
+  styleUrls      : [ './item-tags.component.less' ],
 })
 export class ItemTagsComponent {
 
-  tags = [];
   inputVisible = false;
   inputValue = '';
+  _tags: string[] = [];
+
   @Input() id: number;
+  @Input()
+  set tags(value: string[]) {
+    this._tags = [...value];
+  }
+  get tags(): string[] {
+    return this._tags;
+  }
+
   @ViewChild('inputElement') inputElement: ElementRef;
 
-  handleClose(removedTag: {}): void {
-    this.tags = this.tags.filter(tag => tag !== removedTag);
+  constructor(private tagsService: TagsService) {
+
+  }
+
+  handleClose(removedTag: string): void {
+    this.tagsService.removeTag(removedTag, this.id)
+    .then(() => {
+      this._tags = this._tags.filter(tag => tag !== removedTag);
+    });
   }
 
   sliceTagName(tag: string): string {
@@ -30,10 +47,18 @@ export class ItemTagsComponent {
   }
 
   handleInputConfirm(): void {
-    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1) {
-      this.tags.push(this.inputValue);
+    if (!this.inputValue) {
+      this.inputValue = '';
+      this.inputVisible = false;
+      return;
     }
-    this.inputValue = '';
-    this.inputVisible = false;
+    if (this._tags.indexOf(this.inputValue) === -1) {
+      this.tagsService.addTag(this.inputValue, this.id)
+      .then(() => {
+        this._tags.push(this.inputValue);
+        this.inputValue = '';
+        this.inputVisible = false;
+      });
+    }
   }
 }

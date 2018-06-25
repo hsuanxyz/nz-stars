@@ -7,7 +7,7 @@
           <a [href]="item.html_url" target="_blank">{{item.full_name}}</a> &nbsp;
           <small><i class="anticon anticon-star"></i> {{item.stargazers_count}}</small>
         </h4>
-        <app-item-tags [id]="item.id"></app-item-tags>
+        <app-item-tags [tags]="item.tags" [id]="item.id"></app-item-tags>
       </div>
       <p class="description">{{item.description}}</p>
     </li>

@@ -1,4 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { merge } from 'rxjs';
+
+import { Tag } from '../../interfaces/repo-tags';
+import { AuthService } from '../../services/auth.service';
+import { TagsService } from '../../services/tags.service';
 
 @Component({
   selector: 'app-tags-filter',
@@ -7,12 +12,27 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class TagsFilterComponent {
 
-  selectedTags: string[] = [];
+  selectedTags: Tag[] = [];
+  tags: Tag[] = [];
+  @Output() select = new EventEmitter<Tag[]>();
 
-  @Input() tags: string[] = [];
-  @Output() select = new EventEmitter<string[]>();
+  constructor(private authService: AuthService, private tagsService: TagsService) {
+    merge(
+      this.authService.addUser,
+      this.tagsService.tagChange
+    ).subscribe(() => {
+      this.getTags();
+    });
+  }
 
-  handleChange(checked: boolean, tag: string): void {
+  getTags() {
+    this.tagsService.getTags()
+      .then(tags => {
+        this.tags = tags.tags;
+      });
+  }
+
+  handleChange(checked: boolean, tag: Tag): void {
     if (checked) {
       this.selectedTags.push(tag);
     } else {
@@ -20,4 +40,5 @@ export class TagsFilterComponent {
     }
     this.select.emit(this.selectedTags);
   }
+
 }
