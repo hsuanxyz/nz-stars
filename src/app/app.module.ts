@@ -20,7 +20,8 @@ import { ItemTagsComponent } from './components/item-tags/item-tags.component';
 
 registerLocaleData(zh);
 localForage.config({
-  name: 'nz-stars'
+  name: 'nz-stars',
+  storeName: 'nz-stars'
 });
 
 @NgModule({

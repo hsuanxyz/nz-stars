@@ -21,7 +21,7 @@ export class ItemTagsComponent {
     return this._tags;
   }
 
-  @ViewChild('inputElement') inputElement: ElementRef;
+  @ViewChild('inputElement') inputElement: ElementRef<HTMLInputElement>;
 
   constructor(private tagsService: TagsService) {
 
@@ -42,7 +42,11 @@ export class ItemTagsComponent {
   showInput(): void {
     this.inputVisible = true;
     setTimeout(() => {
-      this.inputElement.nativeElement.focus();
+      if (this.inputElement && this.inputElement.nativeElement) {
+        this.inputElement.nativeElement.focus();
+      } else {
+        this.inputVisible = false;
+      }
     }, 10);
   }
 

@@ -169,7 +169,8 @@ export interface Tag {
 import localForage from "localforage";
 
 localForage.config({
-  name: 'nz-stars'
+  name: 'nz-stars',
+  storeName: 'nz-stars'
 });
 ```
 
