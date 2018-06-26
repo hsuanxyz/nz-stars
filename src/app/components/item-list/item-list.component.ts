@@ -3,7 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { GithubService } from '../../services/github.service';
 import { Subscription } from 'rxjs';
 import { GithubRepo } from '../../interfaces/github';
-import { TagsService } from '../../services/tags.service'
+import { TagsService } from '../../services/tags.service';
 
 @Component({
   selector: 'app-item-list',
@@ -11,7 +11,7 @@ import { TagsService } from '../../services/tags.service'
   styleUrls: ['./item-list.component.less']
 })
 export class ItemListComponent implements OnDestroy {
-  data: (GithubRepo & { tags: string[] })[] = [];
+  data: Array<GithubRepo & { tags: string[] }> = [];
   loading = false;
 
   addUserSubscription: Subscription;

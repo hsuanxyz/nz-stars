@@ -34,11 +34,6 @@ export class ItemTagsComponent {
     });
   }
 
-  sliceTagName(tag: string): string {
-    const isLongTag = tag.length > 20;
-    return isLongTag ? `${tag.slice(0, 20)}...` : tag;
-  }
-
   showInput(): void {
     this.inputVisible = true;
     setTimeout(() => {

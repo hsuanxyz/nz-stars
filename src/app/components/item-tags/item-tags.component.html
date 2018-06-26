@@ -2,7 +2,7 @@
   *ngFor="let tag of tags"
   [nzMode]="'closeable'"
   (nzAfterClose)="handleClose(tag)">
-  {{ sliceTagName(tag) }}
+  {{ tag }}
 </nz-tag>
 <nz-tag
   *ngIf="!inputVisible"
@@ -14,6 +14,7 @@
   #inputElement
   nz-input
   nzSize="small"
+  maxlength="20"
   *ngIf="inputVisible" type="text"
   [(ngModel)]="inputValue"
   style="width: 78px;"

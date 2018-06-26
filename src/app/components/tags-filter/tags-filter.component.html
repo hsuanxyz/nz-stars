@@ -1,6 +1,6 @@
 <nz-card [nzBordered]="false" nzTitle="选择标签">
   <nz-tag *ngFor="let tag of tags" nzMode="checkable"
           [nzChecked]="selectedTags.indexOf(tag) > -1" (nzCheckedChange)="handleChange($event, tag)">
-    {{ tag.name }} ({{tag.count}})
+    {{ tag.name }} <small>({{tag.count}})</small>
   </nz-tag>
 </nz-card>
