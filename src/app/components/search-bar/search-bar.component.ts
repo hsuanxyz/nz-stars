@@ -13,7 +13,7 @@ export class SearchBarComponent {
 
   onClear(): void{
     this.term = null;
-    this.clear.emit()
+    this.clear.emit();
   }
 
   onSearch(value: string): void {

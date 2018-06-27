@@ -1,4 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy } from '@angular/core';
+import { Tag } from '../../interfaces/repo-tags'
 import { AuthService } from '../../services/auth.service';
 import { GithubService } from '../../services/github.service';
 import { Subscription } from 'rxjs';
@@ -8,13 +9,15 @@ import { TagsService } from '../../services/tags.service';
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
-  styleUrls: ['./item-list.component.less']
+  styleUrls: ['./item-list.component.less'],
 })
 export class ItemListComponent implements OnDestroy {
   data: Array<GithubRepo & { tags: string[] }> = [];
   loading = false;
-
   addUserSubscription: Subscription;
+
+  @Input() search: string;
+  @Input() selectedTags: Tag[];
 
   constructor(private authService: AuthService, private githubService: GithubService, private tagsService: TagsService) {
     this.addUserSubscription = this.authService.addUser.subscribe(() => this.getStarredRepo());
@@ -35,6 +38,10 @@ export class ItemListComponent implements OnDestroy {
         this.loading = false;
       });
     });
+  }
+
+  trackByFn(index, item) {
+    return item.id || index;
   }
 
   ngOnDestroy(): void {

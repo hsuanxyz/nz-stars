@@ -1,5 +1,5 @@
 <nz-tag
-  *ngFor="let tag of tags"
+  *ngFor="let tag of _tags"
   [nzMode]="'closeable'"
   (nzAfterClose)="handleClose(tag)">
   {{ tag }}

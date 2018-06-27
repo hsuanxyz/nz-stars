@@ -2,7 +2,7 @@
   <nz-header class="header">
     <div class="title">Stars Manager</div>
     <div class="search-bar-wrap">
-      <app-search-bar></app-search-bar>
+      <app-search-bar #searchBar></app-search-bar>
     </div>
     <div class="user-pane-wrap">
       <app-user-panel></app-user-panel>
@@ -11,13 +11,16 @@
   <nz-layout class="main">
     <nz-sider [nzWidth]="350" class="side">
       <div class="tags-wrap">
-        <app-tags-filter></app-tags-filter>
+        <app-tags-filter #tagsFilter></app-tags-filter>
       </div>
     </nz-sider>
     <nz-layout>
       <nz-content class="content">
         <div class="item-list-wrap">
-          <app-item-list></app-item-list>
+          <app-item-list
+            [search]="searchBar.term"
+            [selectedTags]="tagsFilter.selectedTags">
+          </app-item-list>
         </div>
       </nz-content>
     </nz-layout>

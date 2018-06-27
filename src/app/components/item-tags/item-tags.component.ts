@@ -17,9 +17,6 @@ export class ItemTagsComponent {
   set tags(value: string[]) {
     this._tags = [...value];
   }
-  get tags(): string[] {
-    return this._tags;
-  }
 
   @ViewChild('inputElement') inputElement: ElementRef<HTMLInputElement>;
 
@@ -60,4 +57,5 @@ export class ItemTagsComponent {
       });
     }
   }
+
 }

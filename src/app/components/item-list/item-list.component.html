@@ -1,6 +1,6 @@
 <nz-spin nzTip='Loading...' [nzSpinning]="loading">
   <ul class="list">
-    <li class="item" *ngFor="let item of data">
+    <li class="item" *ngFor="let item of data | repoSearch: search; trackBy: trackByFn ">
       <div class="title-wrap">
         <nz-avatar class="avatar" nzIcon="anticon anticon-user" [nzSrc]="item.owner.avatar_url"></nz-avatar>
         <h4 class="title">

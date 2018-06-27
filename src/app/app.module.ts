@@ -16,6 +16,8 @@ import { SearchBarComponent } from './components/search-bar/search-bar.component
 import { TagsFilterComponent } from './components/tags-filter/tags-filter.component';
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { ItemTagsComponent } from './components/item-tags/item-tags.component';
+import { RepoSearchPipe } from './pipes/repo-search.pipe';
+import { TagsFilterPipe } from './pipes/tags-filter.pipe';
 
 registerLocaleData(zh);
 localForage.config({
@@ -31,7 +33,9 @@ localForage.config({
     SearchBarComponent,
     TagsFilterComponent,
     ItemListComponent,
-    ItemTagsComponent
+    ItemTagsComponent,
+    RepoSearchPipe,
+    TagsFilterPipe
   ],
   imports: [
     BrowserModule,
