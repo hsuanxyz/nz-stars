@@ -11,9 +11,9 @@
 ```base
 src
 ├── components
+│   ├── home
 │   ├── item-list
 │   ├── tags-filter
-│   ├── layout
 │   ├── search-bar
 │   └── user-panel
 ├── services

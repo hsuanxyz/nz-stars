@@ -15,9 +15,9 @@
 ng g c user-panel # 生成 src/app/user-panel
 ```
 
-在 `layout` 组件用户面板位置添加如下代码。
+在 `home` 组件用户面板位置添加如下代码。
 
-**layout.component.html**
+**home.component.html**
 
 ```html
 ...
@@ -70,9 +70,9 @@ ng g c user-panel # 生成 src/app/user-panel
 ng g ng-zorro-antd:input-presuffix -p app --styleext='less' --name=search-bar # 生成 src/app/search-bar
 ```
 
-和之前一样在 `layout` 组件预留的位置中添加该组件。
+和之前一样在 `home` 组件预留的位置中添加该组件。
 
-**layout.component.html**
+**home.component.html**
 
 ```html
 ...
@@ -172,7 +172,7 @@ ng g ng-zorro-antd:tag-hot-tags -p app --styleext='less' --name=tags-filter
 
 将生成的组件放在侧边栏的位置
 
-**layout.component.html**
+**home.component.html**
 
 ```html
 <nz-sider [nzWidth]="350" class="side">
@@ -263,7 +263,7 @@ export class tagsFilterComponent {
 ng g c item-list
 ```
 
-将组件放置 `layout` 组件预留的位置中。
+将组件放置 `home` 组件预留的位置中。
 
 ```html
 ...

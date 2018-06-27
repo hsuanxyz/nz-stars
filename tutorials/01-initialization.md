@@ -6,10 +6,10 @@
 npm install -g @angular/cli
 ```
 
-新建一个名为 `nz-stars` Angular 项目设置样式扩展名为 `less`，并且生成路由模块。
+新建一个名为 `nz-stars` Angular 项目设置样式扩展名为 `less`。
 
 ```base
-ng new nz-stars --style=less --routing
+ng new nz-stars --style=less
 ```
 
 切换到 nz-stars 目录使用 `ng add `添加 NG-ZORRO。此命令会自动的为你初始化 NG-ZORRO。
